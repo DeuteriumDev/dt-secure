@@ -1,0 +1,20 @@
+{
+  "black.enable": true,
+  "prettier.enable": true,
+  "python.analysis.autoImportCompletions": true,
+  "cSpell.words": [
+    "codegen",
+    "corsheaders",
+    "createapplication",
+    "createsuperuser",
+    "ctype",
+    "datatable",
+    "makemigrations",
+    "resourcetype",
+    "sonner",
+    "viewsets"
+  ],
+  "python.defaultInterpreterPath": "${workspaceFolder}/django_api/.venv/bin/python",
+  "typescript.tsdk": "./remix_frontend/node_modules/typescript/lib"
+
+}

@@ -1,0 +1,19 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Poetry Python Debugger: Django",
+      "type": "debugpy",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/django_api",
+      "args": ["runserver"],
+      "python": "${workspaceFolder}/django_api/.venv/bin/python",
+      "django": true,
+      "autoStartBrowser": false,
+      "program": "${workspaceFolder}/django_api/manage.py"
+    },
+  ]
+}

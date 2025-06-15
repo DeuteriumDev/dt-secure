@@ -1,0 +1,33 @@
+# @format
+
+services:
+  db:
+    image: supabase/postgres:17.4.1.036
+    command: postgres -c config_file=/etc/postgresql/postgresql.conf
+    ports:
+      # external port : internal port
+      - ${POSTGRES_PORT}:5432
+    # volumes:
+    #   - data_pg:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_DB=${POSTGRES_DB}
+    networks:
+      - postgres
+
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    ports:
+      - 5674:5672
+      - 15674:15672
+    volumes:
+      - data_rabbitmq:/var/lib/rabbitmq/
+
+volumes:
+  data_pg:
+  data_rabbitmq:
+
+networks:
+  postgres:
+    driver: bridge
