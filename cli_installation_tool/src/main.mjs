@@ -3,7 +3,6 @@ import yargs from "yargs";
 import yaml from "yaml";
 import pg from "pg";
 
-console.log(test);
 
 const CONFIGS = {
   table: "dt_table",
