@@ -1,15 +1,22 @@
 version: 0.1
+# example url: 'postgres://someuser:somepassword@somehost:381/somedatabase?schema=test
 pg_url: ${POSTGRES_URL}
+
+# Enable this if running locally via docker
+# is_local: true
+
+# target table to enable security on
 tables:
   - folders
   - constants
   - hives
 
-api_key: ${DT_API_KEY}
 dt_url: ${DT_URL}
+dt_api_key: ${DT_API_KEY}
 
-# schema to store local db configs and info on, defaults to public schema
-schema: public
+# schema to store local db configs and metadata, defaults to "dt_schema" but
+# you can change it to "public" if needed
+dt_schema: dt_schema
 
 user_source:
   # internal users configuration

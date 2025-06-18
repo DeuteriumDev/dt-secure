@@ -5,6 +5,13 @@ __metadata:
   version: 8
   cacheKey: 10c0
 
+"@electric-sql/pglite@npm:^0.3.3":
+  version: 0.3.3
+  resolution: "@electric-sql/pglite@npm:0.3.3"
+  checksum: 10c0/40bb132cdcb55442c69d735e7b3e6c5413358f17dce37661c1f214e5e6d19ebad666dc7cb963158781affad08c46d05d5bded4e63d9c322de5cc9b0c339d2597
+  languageName: node
+  linkType: hard
+
 "@types/lodash@npm:^4.17.17":
   version: 4.17.17
   resolution: "@types/lodash@npm:4.17.17"
@@ -52,11 +59,13 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "cli_installation_tool@workspace:."
   dependencies:
+    "@electric-sql/pglite": "npm:^0.3.3"
     "@types/lodash": "npm:^4.17.17"
     "@types/pg": "npm:^8.15.4"
     dotenv: "npm:^16.5.0"
     lodash: "npm:^4.17.21"
     pg: "npm:^8.16.0"
+    pg-connection-string: "npm:^2.9.1"
     yaml: "npm:^2.8.0"
     yargs: "npm:^17.7.2"
     zod: "npm:^3.25.64"
@@ -143,6 +152,13 @@ __metadata:
   version: 2.9.0
   resolution: "pg-connection-string@npm:2.9.0"
   checksum: 10c0/7145d00688200685a9d9931a7fc8d61c75f348608626aef88080ece956ceb4ff1cbdee29c3284e41b7a3345bab0e4f50f9edc256e270bfa3a563af4ea78bb490
+  languageName: node
+  linkType: hard
+
+"pg-connection-string@npm:^2.9.1":
+  version: 2.9.1
+  resolution: "pg-connection-string@npm:2.9.1"
+  checksum: 10c0/9a646529bbc0843806fc5de98ce93735a4612b571f11867178a85665d11989a827e6fd157388ca0e34ec948098564fce836c178cfd499b9f0e8cd9972b8e2e5c
   languageName: node
   linkType: hard
 

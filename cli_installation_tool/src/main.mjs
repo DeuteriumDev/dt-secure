@@ -1,16 +1,22 @@
 import fs from "node:fs/promises";
 import yargs from "yargs";
 import yaml from "yaml";
-import pg from "pg";
-
-const CONFIGS = {
-  table: "dt_table",
-  server: "dt_server",
-  readPolicy: "dt_policy_read",
-  getUser: "getCurrentUser",
-};
+import pg, { Client } from "pg";
+import { parse } from "pg-connection-string";
+import _ from "lodash";
+import CONFIGS from "./configs.json";
 
 Object.freeze(CONFIGS);
+
+/**
+ * @typedef {Object} DtConfig
+ * @property {string} dt_api_key - api key from config file
+ * @property {string} dt_url - api key from config file
+ * @property {string} pg_url - postgres connection string
+ * @property {string} dt_schema - pg schema to install our configs and tables into
+ * @property {boolean} [is_local] - optional config to enable loopback
+ * @property {string} [security_table_name] - dt
+ */
 
 /**
  * Get DT config from local file
@@ -29,12 +35,6 @@ export async function getConfig(file) {
   );
   return JSON.parse(resolvedFile);
 }
-
-/**
- * @typedef {Oject} DtConfig
- * @property {string} dt_api_key - api key from config file
- * @property {string} dt_url - api key from config file
- */
 
 /**
  * Get server config from provided url
@@ -59,10 +59,25 @@ export async function fetchRemoteConfig(fetchClient, dt_config) {
   return data;
 }
 
+/**
+ *
+ * @param {Client} client - pg client instance
+ * @param {DtConfig} dt_config - config file data
+ */
 export async function addRemote(
   client,
-  { url, database, port, user, password, dt_schema: schema }
+  { pg_url, dt_schema: schema, is_local, security_table_name }
 ) {
+  const pgConfig = parse(pg_url);
+
+  // add [schema] if provided and it's not the public schema
+  if (dt_schema !== "public") {
+    await client.query(`
+      CREATE SCHEMA IF NOT EXISTS "${schema}";
+    `);
+  }
+
+  // install the server
   await client.query(`
     CREATE EXTENSION IF NOT EXISTS postgres_fdw;
 
@@ -70,35 +85,73 @@ export async function addRemote(
     
     CREATE SERVER "${schema}.${CONFIGS.server}"
       FOREIGN DATA WRAPPER postgres_fdw
-      OPTIONS (host '${url}', dbname '${database}', port '${port}');
+      OPTIONS (host '${pgConfig.host}', dbname '${pgConfig.database}', port '${
+    // use default postgres port when running locally because the server will
+    // be "internal" to docker ie default ports
+    is_local ? "5432" : port
+  }');
 
     CREATE USER MAPPING FOR CURRENT_USER
       SERVER "${schema}.${CONFIGS.server}"
       OPTIONS (user '${user}', password '${password}');
-
-    CREATE FOREIGN TABLE "${schema}.${CONFIGS.table}" (
-        user_id varchar(40) NOT NULL,
-        resource_id varchar(40) NOT NULL,
-        can_create boolean NOT NULL,
-        can_read boolean NOT NULL,
-        can_update boolean NOT NULL,
-        can_delete boolean NOT NULL
-      )
-      SERVER "${schema}.${CONFIGS.server}";
   `);
+
+  // make a circular table to test the connection with
+  if (is_local) {
+    // test server integration
+    const testTableName = `demo-${String(Math.random()).slice(-4, -1)}`;
+    const targetSchema = pgConfig.schema || "public";
+    await client.query(`
+      CREATE TABLE "${targetSchema}.${testTableName}" (
+        id uuid primary key
+      );
+      INSERT INTO "${targetSchema}.${testTableName}" VALUES (gen_random_uuid());
+  
+      IMPORT FOREIGN SCHEMA "${targetSchema}" LIMIT TO ("${targetSchema}.${testTableName}") FROM SERVER "${schema}.${CONFIGS.server}" INTO "${schema}";
+    `);
+    const results = await client.sql(
+      `select count(*) as count from "${schema}.${testTableName}"`
+    );
+    await client.query(`
+      DROP TABLE "${targetSchema}.${testTableName}" CASCADE;
+    `);
+    if (results.rows[0].count !== 1) {
+      throw new Error("PGServerError: fdw server installation failed");
+    }
+  } else {
+    await client.query(`
+      IMPORT FOREIGN SCHEMA "${security_table_name.split(
+        "."[0]
+      )}" LIMIT TO ("${security_table_name}") FROM SERVER "${schema}.${
+      CONFIGS.server
+    }" INTO "${schema}";
+    `);
+
+    const results = await client.sql(
+      `select count(*) from "${security_table_name} limit 1"`
+    );
+    if (results.rows[0].count !== 1) {
+      throw new Error("PGServerError: fdw server installation failed");
+    }
+  }
 }
 
-export async function secureTable(client, { schema }, tableName) {
+export async function secureTable(
+  client,
+  { dt_schema, security_table_name },
+  tableName
+) {
   await client.query(`
-    ALTER TABLE "${schema}.${tableName}" ENABLE ROW LEVEL SECURITY;
-    CREATE POLICY "${schema}.${CONFIGS.readPolicy}_${tableName}"
-      ON "${schema}.${tableName}"
+    ALTER TABLE "${tableName}" ENABLE ROW LEVEL SECURITY;
+    CREATE POLICY "${dt_schema}.${CONFIGS.readPolicy}_${tableName}"
+      ON "${tableName}"
       FOR SELECT
       USING (
+        ${dt_schema}.${CONFIGS.getUser}() is null OR
         ID IN (
-          SELECT user_id
-          FROM "${schema}.${CONFIGS.table}"
-          WHERE can_read = true AND user_id = ${schema}.${CONFIGS.getUser}()
+          SELECT "${CONFIGS.resourceColumnName}" as id
+          FROM "${dt_schema}.${security_table_name}"
+          WHERE ${CONFIGS.canReadColumName} = true AND user_id = ${schema}.${CONFIGS.getUser}()
         )
       );
   `);

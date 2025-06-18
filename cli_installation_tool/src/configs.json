@@ -1,0 +1,7 @@
+{
+  "server": "dt_server",
+  "readPolicy": "dt_policy_read",
+  "getUser": "getCurrentUser",
+  "resourceColumnName": "resource_id",
+  "canReadColumName": "can_read"
+}
