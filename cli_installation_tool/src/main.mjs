@@ -3,7 +3,6 @@ import yargs from "yargs";
 import yaml from "yaml";
 import pg from "pg";
 
-
 const CONFIGS = {
   table: "dt_table",
   server: "dt_server",
@@ -32,17 +31,24 @@ export async function getConfig(file) {
 }
 
 /**
+ * @typedef {Oject} DtConfig
+ * @property {string} dt_api_key - api key from config file
+ * @property {string} dt_url - api key from config file
+ */
+
+/**
  * Get server config from provided url
  * @param {fetch} fetchClient - a function that either is, or emulates [fetch] api
- * @param {string} remoteUrl - url for dt api server
- * @param {string} apiKey - api key for api server, local server defaults to "deuterium"
- * @returns
+ * @param {DtConfig} dt_config - configuration file type
+ * @returns {Object}
  */
-export async function fetchRemoteConfig(fetchClient, remoteUrl, apiKey) {
-  const response = await fetchClient(remoteUrl, {
+export async function fetchRemoteConfig(fetchClient, dt_config) {
+  const response = await fetchClient(dt_config.dt_url, {
+    method: "post",
     headers: {
-      "api-key": apiKey,
+      "api-key": dt_config.dt_api_key,
     },
+    body: dt_config,
   });
   if (!response.ok) {
     throw new Error(
@@ -55,8 +61,7 @@ export async function fetchRemoteConfig(fetchClient, remoteUrl, apiKey) {
 
 export async function addRemote(
   client,
-  { schema },
-  { url, database, port, schema: remoteSchema, user, password }
+  { url, database, port, user, password, dt_schema: schema }
 ) {
   await client.query(`
     CREATE EXTENSION IF NOT EXISTS postgres_fdw;
@@ -69,7 +74,7 @@ export async function addRemote(
 
     CREATE USER MAPPING FOR CURRENT_USER
       SERVER "${schema}.${CONFIGS.server}"
-      OPTIONS (user '${user}', password '${password}', schema_name '${remoteSchema}');
+      OPTIONS (user '${user}', password '${password}');
 
     CREATE FOREIGN TABLE "${schema}.${CONFIGS.table}" (
         user_id varchar(40) NOT NULL,
@@ -102,19 +107,16 @@ export async function secureTable(client, { schema }, tableName) {
 /**
  * @param {{config: string}} configFile - path to config file
  */
-async function main({ config: configFile }) {
+async function main({ config }) {
+  const configFile = process.env.DT_CONFIG || config;
   const localConfig = await getConfig(configFile);
-  const remoteConfig = fetchRemoteConfig(
-    fetch,
-    localConfig.dt_url,
-    localConfig.api_key
-  );
+  const remoteConfig = fetchRemoteConfig(fetch, localConfig);
   const client = new pg.Client({
     connectionString: localConfig.pg_url,
   });
   await client.connect();
 
-  await addRemote(client, remoteConfig);
+  await addRemote(client, { ...remoteConfig, ...localConfig });
   await Promise.all(
     localConfig.tables.map((t) => {
       secureTable(client, t);
