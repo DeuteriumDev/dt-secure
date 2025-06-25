@@ -1,3 +1,15 @@
+import { PGlite } from "@electric-sql/pglite";
+import {
+  vi,
+  describe,
+  it,
+  expect,
+  beforeAll,
+  beforeEach,
+  afterEach,
+} from "vitest";
+import pg from "pg";
+
 import {
   addRemote,
   getConfig,
@@ -7,21 +19,35 @@ import {
 
 describe("main.mjs", () => {
   describe("addRemote", () => {
+    let client;
+    beforeAll(async () => {
+      client = new pg.Client({
+        connectionString: process.env.PG_URL,
+      });
+      await client.connect();
+    });
+
     it("should run without sql errors", async () => {
-      await addRemote();
+      await addRemote(client, {
+        dt_schema: "test",
+        pg_url: process.env.PG_URL,
+        is_local: true,
+        security_table_name: "test_security",
+      });
     });
   });
 
   describe("fetchRemoteConfig", () => {
     it("should run without errors", async () => {
-      const results = fetchRemoteConfig(
+      const results = await fetchRemoteConfig(
         () => ({
-          json: () => Promise.resolve({ test: 1 }),
+          ok: true,
+          json: () => Promise.resolve({ test: 1, ok: true }),
         }),
         "test-url",
         "test-apiKey"
       );
-      expect(results).toEqual({ test: 1 });
+      expect(results).toEqual({ test: 1, ok: true });
     });
   });
 });
