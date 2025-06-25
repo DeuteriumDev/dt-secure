@@ -6,10 +6,12 @@ export $(shell sed 's/=.*//' .env)
 
 
 install: ## instal deps & libs
+	@asdf install
 	@yarn set version stable
 	@yarn install
 .PHONY: install
 
-test: ## run the unit tests
-	@echo "test this somehow..."
+tests: ## run the unit tests
+	@yarn vitest
 .PHONY: test
+

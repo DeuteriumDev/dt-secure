@@ -17,6 +17,7 @@
   "devDependencies": {
     "@electric-sql/pglite": "^0.3.3",
     "@types/lodash": "^4.17.17",
-    "@types/pg": "^8.15.4"
+    "@types/pg": "^8.15.4",
+    "vitest": "^3.2.4"
   }
 }
