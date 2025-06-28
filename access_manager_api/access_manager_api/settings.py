@@ -64,7 +64,7 @@ INSTALLED_APPS = [
     "polymorphic",
     # apps
     "accounts",
-    "access_control"
+    "access_control",
 ]
 
 MIDDLEWARE = [
@@ -115,9 +115,11 @@ DATABASES = {
         "PASSWORD": os.getenv("POSTGRES_PASSWORD") or "postgres",
         "HOST": os.getenv("POSTGRES_HOST") or "localhost",
         "PORT": os.getenv("POSTGRES_PORT") or "54324",
+        "OPTIONS": {
+            "options": f"-c search_path={os.getenv("POSTGRES_SCHEMA") or 'dt'}",
+        },
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
