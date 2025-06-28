@@ -13,6 +13,7 @@ help: ## Show this help
 .PHONY: help
 
 install:
+	@asdf install
 	@poetry install
 .PHONY: install
 
