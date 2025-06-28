@@ -152,6 +152,13 @@ export async function addRemote(
   }
 }
 
+/**
+ * Decorate given [tableName] with dt policy
+ *
+ * @param {Client} client - sql client
+ * @param {DtConfig} dt_config - config object
+ * @param {string} tableName - target table name
+ */
 export async function secureTable(
   client,
   { dt_schema, security_table_name },
@@ -159,6 +166,8 @@ export async function secureTable(
 ) {
   await client.query(`
     ALTER TABLE "${tableName}" ENABLE ROW LEVEL SECURITY;
+  `);
+  await client.query(`
     CREATE POLICY "${dt_schema}.${CONFIGS.readPolicy}_${tableName}"
       ON "${tableName}"
       FOR SELECT
@@ -168,7 +177,7 @@ export async function secureTable(
           FROM "${dt_schema}.${security_table_name}"
           WHERE
             ${dt_schema}.${CONFIGS.getUser}() IS null OR (
-              "${CONFIGS.canReadColumName} "= true
+              "${CONFIGS.canReadColumName}" = true
               AND user_id = ${schema}.${CONFIGS.getUser}()
               AND "${CONFIGS.resourceColumnName}" = ID
             )
@@ -184,10 +193,28 @@ async function main({ config }) {
   const configFile = process.env.DT_CONFIG || config;
   const localConfig = await getConfig(configFile);
   const remoteConfig = fetchRemoteConfig(fetch, localConfig);
-  const client = new pg.Client({
-    connectionString: localConfig.pg_url,
-  });
-  await client.connect();
+  let client;
+
+  // build proxy object to log all outputs
+  if (process.env.DEBUG) {
+    client = {
+      _client: new pg.Client({
+        connectionString: localConfig.pg_url,
+      }),
+      query: async (...args) => {
+        const results = await client._client.query(...args);
+        console.log([...args, JSON.stringify(results, null, 2)]);
+        return results;
+      },
+      end: async () => await client._client.end(),
+      connect: async () => await client._client.connect(),
+    };
+  } else {
+    client = new pg.Client({
+      connectionString: localConfig.pg_url,
+    });
+  }
+  client = await client.connect();
 
   await addRemote(client, { ...remoteConfig, ...localConfig });
   await Promise.all(

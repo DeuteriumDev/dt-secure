@@ -7,6 +7,7 @@ import {
   beforeAll,
   beforeEach,
   afterEach,
+  afterAll,
 } from "vitest";
 import pg from "pg";
 
@@ -25,6 +26,10 @@ describe("main.mjs", () => {
         connectionString: process.env.PG_URL,
       });
       await client.connect();
+    });
+
+    afterAll(async () => {
+      await client.end();
     });
 
     it("should run without sql errors", async () => {
