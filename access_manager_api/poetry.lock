@@ -600,6 +600,26 @@ reference = "v4.1.0"
 resolved_reference = "3a81c0e1cc9e701569231fbf0e4f8f89ba9a1ac9"
 
 [[package]]
+name = "django-rest-durin"
+version = "1.1.0"
+description = "Per API client token authentication Module for django rest framework."
+optional = false
+python-versions = "*"
+files = [
+    {file = "django-rest-durin-1.1.0.tar.gz", hash = "sha256:64e9f1706a6efc3de699ab0808990120228747c18d5826016cd05f37984e2776"},
+    {file = "django_rest_durin-1.1.0-py3-none-any.whl", hash = "sha256:8f48e77b29a0b35e128ca6f35cb22941bfee8559dfb75f5bc7e81c893a4c5b8d"},
+]
+
+[package.dependencies]
+django = ">=2.2"
+djangorestframework = ">=3.7.0"
+humanize = "*"
+
+[package.extras]
+dev = ["black (==20.8b1)", "django-cache-memoize", "django-nose", "flake8", "isort"]
+test = ["black (==20.8b1)", "django-cache-memoize", "django-nose", "flake8", "isort"]
+
+[[package]]
 name = "django-rest-polymorphic"
 version = "0.1.10"
 description = "Polymorphic serializers for Django REST Framework."
@@ -755,6 +775,20 @@ gevent = ["gevent (>=1.4.0)"]
 setproctitle = ["setproctitle"]
 testing = ["coverage", "eventlet", "gevent", "pytest", "pytest-cov"]
 tornado = ["tornado (>=0.2)"]
+
+[[package]]
+name = "humanize"
+version = "4.12.3"
+description = "Python humanize utilities"
+optional = false
+python-versions = ">=3.9"
+files = [
+    {file = "humanize-4.12.3-py3-none-any.whl", hash = "sha256:2cbf6370af06568fa6d2da77c86edb7886f3160ecd19ee1ffef07979efc597f6"},
+    {file = "humanize-4.12.3.tar.gz", hash = "sha256:8430be3a615106fdfceb0b2c1b41c4c98c6b0fc5cc59663a5539b111dd325fb0"},
+]
+
+[package.extras]
+tests = ["freezegun", "pytest", "pytest-cov"]
 
 [[package]]
 name = "idna"
@@ -1529,4 +1563,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.12"
-content-hash = "2443b9ed7d2cd047ea5b05bffb55aa795d2ecb381433400fd0093d29397afef4"
+content-hash = "9d6cdc86d8b4797c911240b5f0d1f8374e3e6c0bdac789527309784e98f461a3"
