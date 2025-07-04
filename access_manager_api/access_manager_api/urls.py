@@ -1,3 +1,9 @@
+from rest_framework.routers import DefaultRouter
+from django.contrib import admin
+from django.urls import include, path, re_path
+from accounts import views as account_views
+
+
 """
 URL configuration for access_manager_api project.
 
@@ -15,9 +21,27 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 
-from django.contrib import admin
-from django.urls import path
+router = DefaultRouter()
+
+# accounts
+router.register(
+    r"users",
+    account_views.CustomUserViewSet,
+    basename="user",
+)
+router.register(
+    r"organizations",
+    account_views.OrganizationViewSet,
+    basename="organization",
+)
+router.register(
+    r"groups",
+    account_views.CustomGroupViewSet,
+    basename="group",
+)
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    re_path(r"api/auth/", include("durin.urls")),
+    re_path(r"api/v1/", include(router.urls)),
 ]

@@ -13,6 +13,8 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 from pathlib import Path
 from django.core.management.commands.runserver import Command as runserver
 import os
+from datetime import timedelta
+from rest_framework.settings import api_settings
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -35,7 +37,7 @@ SECRET_KEY = (
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = (os.getenv("DJANGO_ENV") or "DEVELOPMENT") != "PRODUCTION"
 
-ALLOWED_HOSTS = (os.getenv("ALLOWED_HOSTS") or "localhost").split(",")
+ALLOWED_HOSTS = (os.getenv("ALLOWED_HOSTS") or "localhost,127.0.0.1").split(",")
 CSRF_TRUSTED_ORIGINS = (os.getenv("CSRF_TRUSTED_ORIGINS") or "http://localhost").split(
     ","
 )
@@ -54,7 +56,6 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",
-    "oauth2_provider",
     "corsheaders",
     "drf_spectacular",
     "django_filters",
@@ -62,6 +63,7 @@ INSTALLED_APPS = [
     "filters",
     "simple_history",
     "polymorphic",
+    "durin",
     # apps
     "accounts",
     "access_control",
@@ -156,15 +158,14 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = "static/"
+# DEFAULT_AUTO_FIELD = "access_manager_api.fields.UUIDAutoField"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 
 REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "access_manager_api.pagination.CustomPageNumberPagination",
     "PAGE_SIZE": int(os.getenv("PAGE_SIZE") or "10"),
-    "DEFAULT_AUTHENTICATION_CLASSES": (
-        "oauth2_provider.contrib.rest_framework.OAuth2Authentication",
-    ),
+    "DEFAULT_AUTHENTICATION_CLASSES": ("durin.auth.TokenAuthentication",),
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     "DEFAULT_FILTER_BACKENDS": [
         "django_filters.rest_framework.DjangoFilterBackend",
@@ -175,21 +176,22 @@ REST_FRAMEWORK = {
     ],
 }
 
+REST_DURIN = {
+    "DEFAULT_TOKEN_TTL": timedelta(days=1),
+    "TOKEN_CHARACTER_LENGTH": 64,
+    "USER_SERIALIZER": "accounts.serializers.CustomUserSerializer",
+    "AUTH_HEADER_PREFIX": "Token",
+    "EXPIRY_DATETIME_FORMAT": api_settings.DATETIME_FORMAT,
+    "TOKEN_CACHE_TIMEOUT": 60,
+    "REFRESH_TOKEN_ON_LOGIN": True,
+    "AUTHTOKEN_SELECT_RELATED_LIST": ["user"],
+    "API_ACCESS_CLIENT_NAME": None,
+    "API_ACCESS_EXCLUDE_FROM_SESSIONS": False,
+    "API_ACCESS_RESPONSE_INCLUDE_TOKEN": False,
+}
+
 AUTHENTICATION_BACKENDS = (
     "django.contrib.auth.backends.ModelBackend",  # this is default
 )
-
-OAUTH2_PROVIDER = {
-    # this is the list of available scopes
-    "SCOPES": {
-        "read": "Read scope",
-        "write": "Write scope",
-    },
-    # 8 days
-    "ACCESS_TOKEN_EXPIRE_SECONDS": int(
-        os.getenv("ACCESS_TOKEN_EXPIRE_SECONDS") or (60 * 60 * 24 * 8)
-    ),
-}
-
 
 AUTH_USER_MODEL = "accounts.CustomUser"

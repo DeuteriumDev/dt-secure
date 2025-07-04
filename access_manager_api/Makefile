@@ -24,14 +24,12 @@ migrations: ## run all migrations
 	@$(DJANGO) migrate
 .PHONY: migrations
 
-init: ## add admin user and add remix application JWT keys, see [.env](./.env) for admin pass
+init: migrations ## add admin user and add remix application JWT keys, see [.env](./.env) for admin pass
 	@$(DJANGO) createsuperuser --no-input --email admin@admin.ca
-	@$(DJANGO) createapplication --client-id $(CLIENT_ID) --client-secret $(CLIENT_SECRET) --algorithm HS256 --name remix_frontend confidential password
 .PHONY: init
 
 seed: migrations init ## add test user and supporting data
 	@$(DJANGO) seed
-	@$(DJANGO) createinitialrevisions
 .PHONY: seed
 
 dev: ## run the development server
@@ -40,8 +38,9 @@ dev: ## run the development server
 
 schema: ## generate the OpenAPI schema
 	@$(DJANGO) spectacular --color --file schema.yml
-	@node ../remix_frontend/node_modules/prettier/bin/prettier.cjs schema.yml --write
-.PHONy: schema
+	@sed -i '' -e 's/\/\/{id}/\/{id}\//' schema.yml
+	# @node ../remix_frontend/node_modules/prettier/bin/prettier.cjs schema.yml --write
+.PHONY: schema
 
 shell:
 	@$(DJANGO) shell
@@ -68,7 +67,7 @@ revisions:
 
 DB_CONNECTION="postgresql://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@$(POSTGRES_HOST):$(POSTGRES_PORT)/$(POSTGRES_DB)"
 reset: ## Reset connected db
-	@echo "drop schema public cascade; create schema public;" | psql $(DB_CONNECTION)
+	@echo "drop schema public cascade;drop schema $(POSTGRES_SCHEMA) cascade ; create schema public; create schema $(POSTGRES_SCHEMA)" | psql $(DB_CONNECTION)
 .PHONY: reset
 
 tests:
