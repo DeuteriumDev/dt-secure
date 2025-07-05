@@ -5,6 +5,7 @@ include .env
 export $(shell sed 's/=.*//' .env)
 
 DJANGO=poetry run python manage.py
+DB_CONNECTION="postgresql://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@$(POSTGRES_HOST):$(POSTGRES_PORT)/$(POSTGRES_DB)"
 
 help: ## Show this help
 	@echo "\nSpecify a command. The choices are:\n"
@@ -31,6 +32,19 @@ init: migrations ## add admin user and add remix application JWT keys, see [.env
 seed: migrations init ## add test user and supporting data
 	@$(DJANGO) seed
 .PHONY: seed
+
+seed-only: ## add test user and supporting data
+	@$(DJANGO) seed
+.PHONY: seed-only
+
+clean:
+	rm -rf **/migrations
+.PHONY: clean
+
+
+reset: clean ## Reset connected db
+	@echo "drop schema public cascade;drop schema $(POSTGRES_SCHEMA) cascade ; create schema public; create schema $(POSTGRES_SCHEMA)" | psql $(DB_CONNECTION)
+.PHONY: reset
 
 dev: ## run the development server
 	@$(DJANGO) runserver
@@ -59,16 +73,6 @@ scheduler: ## needs services running
 worker: ## needs services running
 	@poetry run celery -A django_api worker -l INFO
 .PHONY: worker
-
-
-revisions: 
-	@$(DJANGO) createinitialrevisions
-.PHONY: revisions
-
-DB_CONNECTION="postgresql://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@$(POSTGRES_HOST):$(POSTGRES_PORT)/$(POSTGRES_DB)"
-reset: ## Reset connected db
-	@echo "drop schema public cascade;drop schema $(POSTGRES_SCHEMA) cascade ; create schema public; create schema $(POSTGRES_SCHEMA)" | psql $(DB_CONNECTION)
-.PHONY: reset
 
 tests:
 	@$(DJANGO) test -p "test*"
