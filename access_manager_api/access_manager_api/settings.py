@@ -42,6 +42,7 @@ CSRF_TRUSTED_ORIGINS = (os.getenv("CSRF_TRUSTED_ORIGINS") or "http://localhost")
     ","
 )
 
+HOST_NAME = os.getenv("HOST_NAME") or "localhost"
 
 # Application definition
 
@@ -109,6 +110,8 @@ WSGI_APPLICATION = (
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
+DB_SCHEMA = os.getenv("POSTGRES_SCHEMA") or 'dt'
+
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql_psycopg2",
@@ -118,7 +121,7 @@ DATABASES = {
         "HOST": os.getenv("POSTGRES_HOST") or "localhost",
         "PORT": os.getenv("POSTGRES_PORT") or "54324",
         "OPTIONS": {
-            "options": f"-c search_path={os.getenv("POSTGRES_SCHEMA") or 'dt'}",
+            "options": f"-c search_path={DB_SCHEMA}",
         },
     }
 }
@@ -177,7 +180,7 @@ REST_FRAMEWORK = {
 }
 
 REST_DURIN = {
-    "DEFAULT_TOKEN_TTL": timedelta(days=1),
+    "DEFAULT_TOKEN_TTL": timedelta(days=365),
     "TOKEN_CHARACTER_LENGTH": 64,
     "USER_SERIALIZER": "accounts.serializers.CustomUserSerializer",
     "AUTH_HEADER_PREFIX": "Token",
