@@ -77,3 +77,7 @@ worker: ## needs services running
 tests:
 	@$(DJANGO) test -p "test*"
 .PHONY: tests
+
+urls:
+	@$(DJANGO) show_urls
+.PHONY: urls
