@@ -42,7 +42,7 @@ CSRF_TRUSTED_ORIGINS = (os.getenv("CSRF_TRUSTED_ORIGINS") or "http://localhost")
     ","
 )
 
-HOST_NAME = os.getenv("HOST_NAME") or "localhost"
+HOST_NAME = os.getenv("HOST_NAME") or "http://localhost"
 
 # Application definition
 
@@ -65,6 +65,7 @@ INSTALLED_APPS = [
     "simple_history",
     "polymorphic",
     "durin",
+    'django_extensions',
     # apps
     "accounts",
     "access_control",
@@ -110,12 +111,13 @@ WSGI_APPLICATION = (
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-DB_SCHEMA = os.getenv("POSTGRES_SCHEMA") or 'dt'
+DB_NAME = os.getenv("POSTGRES_DB") or "postgres"
+DB_SCHEMA = os.getenv("POSTGRES_SCHEMA") or "dt"
 
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql_psycopg2",
-        "NAME": os.getenv("POSTGRES_DB") or "postgres",
+        "NAME": DB_NAME,
         "USER": os.getenv("POSTGRES_USER") or "postgres",
         "PASSWORD": os.getenv("POSTGRES_PASSWORD") or "postgres",
         "HOST": os.getenv("POSTGRES_HOST") or "localhost",

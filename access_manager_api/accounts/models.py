@@ -106,24 +106,23 @@ class EnvironmentManager(models.Manager):
         token = AuthToken.objects.create(user=auth_user, client=client)
         token.save()
 
-        print(dir(self))
-
         uname = auth_user.email.split("@")[0]
         host = settings.HOST_NAME
         port = settings.DATABASES["default"]["PORT"]
         schema = settings.DB_SCHEMA
+        name = settings.DB_NAME
         instance = super(EnvironmentManager, self).create(
             **kwargs,
             auth_user=auth_user,
             url=settings.HOST_NAME,
-            pg_url=f"postgres://{uname}:{password}@{host}:{port}?schema={schema}",
+            pg_url=f"postgres://{uname}:{password}@{host}:{port}/{name}?schema={schema}",
         )
         return instance
 
 
 class Environment(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    name = models.CharField("name", blank=False, null=False, unique=True)
+    name = models.CharField("name", blank=False, null=False)
     created = models.DateTimeField(null=False, auto_now_add=True)
     updated = models.DateTimeField(null=False, auto_now=True)
     description = models.TextField(null=True, blank=True, default="")
@@ -146,14 +145,20 @@ class Environment(models.Model):
 
     class Meta:
         ordering = ["created"]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["name", "parent_org"],
+                name="unique token for org per client",
+            )
+        ]
 
     def __str__(self):
         return f"{self.name}"
 
     @property
     def token(self):
-        return AuthToken.object.get(user=self.auth_user)
+        return AuthToken.objects.get(user=self.auth_user).token
 
     @property
     def client(self):
-        return AuthToken.object.get(user=self.auth_user).client
+        return AuthToken.objects.get(user=self.auth_user).client
