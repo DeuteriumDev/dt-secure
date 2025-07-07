@@ -65,7 +65,7 @@ INSTALLED_APPS = [
     "simple_history",
     "polymorphic",
     "durin",
-    'django_extensions',
+    "django_extensions",
     # apps
     "accounts",
     "access_control",
