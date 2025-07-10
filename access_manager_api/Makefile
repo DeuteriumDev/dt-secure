@@ -53,7 +53,7 @@ dev: ## run the development server
 schema: ## generate the OpenAPI schema
 	@$(DJANGO) spectacular --color --file schema.yml
 	@sed -i '' -e 's/\/\/{id}/\/{id}\//' schema.yml
-	# @node ../remix_frontend/node_modules/prettier/bin/prettier.cjs schema.yml --write
+	@node ../cli_installation_tool/node_modules/prettier/bin/prettier.cjs schema.yml --write
 .PHONY: schema
 
 shell:

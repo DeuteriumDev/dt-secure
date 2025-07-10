@@ -1,9 +1,9 @@
 openapi: 3.0.3
 info:
-  title: ''
+  title: ""
   version: 0.0.0
 paths:
-  /api/auth/apiaccess/:
+  /api/v1/auth/apiaccess/:
     get:
       operationId: auth_apiaccess_retrieve
       description: |-
@@ -15,9 +15,9 @@ paths:
 
         .. versionadded:: 1.0.0
       tags:
-      - auth
+        - auth
       responses:
-        '200':
+        "200":
           description: No response body
     post:
       operationId: auth_apiaccess_create
@@ -30,9 +30,9 @@ paths:
 
         .. versionadded:: 1.0.0
       tags:
-      - auth
+        - auth
       responses:
-        '200':
+        "200":
           description: No response body
     delete:
       operationId: auth_apiaccess_destroy
@@ -45,11 +45,11 @@ paths:
 
         .. versionadded:: 1.0.0
       tags:
-      - auth
+        - auth
       responses:
-        '204':
+        "204":
           description: No response body
-  /api/auth/login/:
+  /api/v1/auth/login/:
     post:
       operationId: auth_login_create
       description: |-
@@ -66,11 +66,11 @@ paths:
         It is possible to customize LoginView behaviour by overriding the following
         helper methods:
       tags:
-      - auth
+        - auth
       responses:
-        '200':
+        "200":
           description: No response body
-  /api/auth/logout/:
+  /api/v1/auth/logout/:
     post:
       operationId: auth_logout_create
       description: |-
@@ -86,11 +86,11 @@ paths:
 
         :returns: 204 (No content)
       tags:
-      - auth
+        - auth
       responses:
-        '200':
+        "200":
           description: No response body
-  /api/auth/logoutall/:
+  /api/v1/auth/logoutall/:
     post:
       operationId: auth_logoutall_create
       description: |-
@@ -108,11 +108,11 @@ paths:
 
         :returns: 204 (No content)
       tags:
-      - auth
+        - auth
       responses:
-        '200':
+        "200":
           description: No response body
-  /api/auth/refresh/:
+  /api/v1/auth/refresh/:
     post:
       operationId: auth_refresh_create
       description: |-
@@ -128,11 +128,11 @@ paths:
 
         2. :meth:`durin.signals.token_renewed` is called.
       tags:
-      - auth
+        - auth
       responses:
-        '200':
+        "200":
           description: No response body
-  /api/auth/sessions/:
+  /api/v1/auth/sessions/:
     get:
       operationId: auth_sessions_list
       description: |-
@@ -143,24 +143,24 @@ paths:
 
         .. versionadded:: 1.0.0
       parameters:
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
+        - name: ordering
+          required: false
+          in: query
+          description: Which field to use when ordering the results.
+          schema:
+            type: string
       tags:
-      - auth
+        - auth
       responses:
-        '200':
+        "200":
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/TokenSessions'
-          description: ''
-  /api/auth/sessions/{id}/:
+                  $ref: "#/components/schemas/TokenSessions"
+          description: ""
+  /api/v1/auth/sessions/{id}/:
     delete:
       operationId: auth_sessions_destroy
       description: |-
@@ -171,531 +171,531 @@ paths:
 
         .. versionadded:: 1.0.0
       parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this auth token.
-        required: true
+        - in: path
+          name: id
+          schema:
+            type: integer
+          description: A unique integer value identifying this auth token.
+          required: true
       tags:
-      - auth
+        - auth
       responses:
-        '204':
+        "204":
           description: No response body
   /api/v1/groups/:
     get:
-      operationId: v1_groups_list
+      operationId: groups_list
       description: |-
         This viewset provides dynamically generated
         filters by applying defined filters on generic
         queryset.
       parameters:
-      - in: query
-        name: created
-        schema:
-          type: string
-          format: date-time
-      - in: query
-        name: created__gte
-        schema:
-          type: string
-      - in: query
-        name: created__lte
-        schema:
-          type: string
-      - in: query
-        name: description__contains
-        schema:
-          type: string
-      - in: query
-        name: description__exact
-        schema:
-          type: string
-      - in: query
-        name: hidden
-        schema:
-          type: boolean
-      - in: query
-        name: id
-        schema:
-          type: string
-          format: uuid
-      - in: query
-        name: id__exact
-        schema:
-          type: string
-      - in: query
-        name: id__in
-        schema:
-          type: string
-      - in: query
-        name: name
-        schema:
-          type: string
-      - in: query
-        name: name__contains
-        schema:
-          type: string
-      - in: query
-        name: name__exact
-        schema:
-          type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - in: query
-        name: parent
-        schema:
-          type: string
-          format: uuid
-      - in: query
-        name: parent__exact
-        schema:
-          type: string
-      - in: query
-        name: parent__in
-        schema:
-          type: string
-      - in: query
-        name: parent__isnull
-        schema:
-          type: string
-      - name: size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - in: query
-        name: updated
-        schema:
-          type: string
-          format: date-time
-      - in: query
-        name: updated__gte
-        schema:
-          type: string
-      - in: query
-        name: updated__lte
-        schema:
-          type: string
+        - in: query
+          name: created
+          schema:
+            type: string
+            format: date-time
+        - in: query
+          name: created__gte
+          schema:
+            type: string
+        - in: query
+          name: created__lte
+          schema:
+            type: string
+        - in: query
+          name: description__contains
+          schema:
+            type: string
+        - in: query
+          name: description__exact
+          schema:
+            type: string
+        - in: query
+          name: hidden
+          schema:
+            type: boolean
+        - in: query
+          name: id
+          schema:
+            type: string
+            format: uuid
+        - in: query
+          name: id__exact
+          schema:
+            type: string
+        - in: query
+          name: id__in
+          schema:
+            type: string
+        - in: query
+          name: name
+          schema:
+            type: string
+        - in: query
+          name: name__contains
+          schema:
+            type: string
+        - in: query
+          name: name__exact
+          schema:
+            type: string
+        - name: ordering
+          required: false
+          in: query
+          description: Which field to use when ordering the results.
+          schema:
+            type: string
+        - name: page
+          required: false
+          in: query
+          description: A page number within the paginated result set.
+          schema:
+            type: integer
+        - in: query
+          name: parent
+          schema:
+            type: string
+            format: uuid
+        - in: query
+          name: parent__exact
+          schema:
+            type: string
+        - in: query
+          name: parent__in
+          schema:
+            type: string
+        - in: query
+          name: parent__isnull
+          schema:
+            type: string
+        - name: size
+          required: false
+          in: query
+          description: Number of results to return per page.
+          schema:
+            type: integer
+        - in: query
+          name: updated
+          schema:
+            type: string
+            format: date-time
+        - in: query
+          name: updated__gte
+          schema:
+            type: string
+        - in: query
+          name: updated__lte
+          schema:
+            type: string
       tags:
-      - v1
+        - groups
       responses:
-        '200':
+        "200":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PaginatedCustomGroupList'
-          description: ''
+                $ref: "#/components/schemas/PaginatedCustomGroupList"
+          description: ""
     post:
-      operationId: v1_groups_create
+      operationId: groups_create
       description: |-
         This viewset provides dynamically generated
         filters by applying defined filters on generic
         queryset.
       parameters:
-      - in: query
-        name: created__gte
-        schema:
-          type: string
-      - in: query
-        name: created__lte
-        schema:
-          type: string
-      - in: query
-        name: description__contains
-        schema:
-          type: string
-      - in: query
-        name: description__exact
-        schema:
-          type: string
-      - in: query
-        name: id__exact
-        schema:
-          type: string
-      - in: query
-        name: id__in
-        schema:
-          type: string
-      - in: query
-        name: name__contains
-        schema:
-          type: string
-      - in: query
-        name: name__exact
-        schema:
-          type: string
-      - in: query
-        name: parent__exact
-        schema:
-          type: string
-      - in: query
-        name: parent__in
-        schema:
-          type: string
-      - in: query
-        name: parent__isnull
-        schema:
-          type: string
-      - in: query
-        name: updated__gte
-        schema:
-          type: string
-      - in: query
-        name: updated__lte
-        schema:
-          type: string
+        - in: query
+          name: created__gte
+          schema:
+            type: string
+        - in: query
+          name: created__lte
+          schema:
+            type: string
+        - in: query
+          name: description__contains
+          schema:
+            type: string
+        - in: query
+          name: description__exact
+          schema:
+            type: string
+        - in: query
+          name: id__exact
+          schema:
+            type: string
+        - in: query
+          name: id__in
+          schema:
+            type: string
+        - in: query
+          name: name__contains
+          schema:
+            type: string
+        - in: query
+          name: name__exact
+          schema:
+            type: string
+        - in: query
+          name: parent__exact
+          schema:
+            type: string
+        - in: query
+          name: parent__in
+          schema:
+            type: string
+        - in: query
+          name: parent__isnull
+          schema:
+            type: string
+        - in: query
+          name: updated__gte
+          schema:
+            type: string
+        - in: query
+          name: updated__lte
+          schema:
+            type: string
       tags:
-      - v1
+        - groups
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CustomGroup'
+              $ref: "#/components/schemas/CustomGroup"
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/CustomGroup'
+              $ref: "#/components/schemas/CustomGroup"
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/CustomGroup'
+              $ref: "#/components/schemas/CustomGroup"
         required: true
       responses:
-        '201':
+        "201":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CustomGroup'
-          description: ''
+                $ref: "#/components/schemas/CustomGroup"
+          description: ""
   /api/v1/groups/{id}/:
     get:
-      operationId: v1_groups_retrieve
+      operationId: groups_retrieve
       description: |-
         This viewset provides dynamically generated
         filters by applying defined filters on generic
         queryset.
       parameters:
-      - in: query
-        name: created__gte
-        schema:
-          type: string
-      - in: query
-        name: created__lte
-        schema:
-          type: string
-      - in: query
-        name: description__contains
-        schema:
-          type: string
-      - in: query
-        name: description__exact
-        schema:
-          type: string
-      - in: path
-        name: id
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this custom group.
-        required: true
-      - in: query
-        name: id__exact
-        schema:
-          type: string
-      - in: query
-        name: id__in
-        schema:
-          type: string
-      - in: query
-        name: name__contains
-        schema:
-          type: string
-      - in: query
-        name: name__exact
-        schema:
-          type: string
-      - in: query
-        name: parent__exact
-        schema:
-          type: string
-      - in: query
-        name: parent__in
-        schema:
-          type: string
-      - in: query
-        name: parent__isnull
-        schema:
-          type: string
-      - in: query
-        name: updated__gte
-        schema:
-          type: string
-      - in: query
-        name: updated__lte
-        schema:
-          type: string
+        - in: query
+          name: created__gte
+          schema:
+            type: string
+        - in: query
+          name: created__lte
+          schema:
+            type: string
+        - in: query
+          name: description__contains
+          schema:
+            type: string
+        - in: query
+          name: description__exact
+          schema:
+            type: string
+        - in: path
+          name: id
+          schema:
+            type: string
+            format: uuid
+          description: A UUID string identifying this custom group.
+          required: true
+        - in: query
+          name: id__exact
+          schema:
+            type: string
+        - in: query
+          name: id__in
+          schema:
+            type: string
+        - in: query
+          name: name__contains
+          schema:
+            type: string
+        - in: query
+          name: name__exact
+          schema:
+            type: string
+        - in: query
+          name: parent__exact
+          schema:
+            type: string
+        - in: query
+          name: parent__in
+          schema:
+            type: string
+        - in: query
+          name: parent__isnull
+          schema:
+            type: string
+        - in: query
+          name: updated__gte
+          schema:
+            type: string
+        - in: query
+          name: updated__lte
+          schema:
+            type: string
       tags:
-      - v1
+        - groups
       responses:
-        '200':
+        "200":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CustomGroup'
-          description: ''
+                $ref: "#/components/schemas/CustomGroup"
+          description: ""
     put:
-      operationId: v1_groups_update
+      operationId: groups_update
       description: |-
         This viewset provides dynamically generated
         filters by applying defined filters on generic
         queryset.
       parameters:
-      - in: query
-        name: created__gte
-        schema:
-          type: string
-      - in: query
-        name: created__lte
-        schema:
-          type: string
-      - in: query
-        name: description__contains
-        schema:
-          type: string
-      - in: query
-        name: description__exact
-        schema:
-          type: string
-      - in: path
-        name: id
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this custom group.
-        required: true
-      - in: query
-        name: id__exact
-        schema:
-          type: string
-      - in: query
-        name: id__in
-        schema:
-          type: string
-      - in: query
-        name: name__contains
-        schema:
-          type: string
-      - in: query
-        name: name__exact
-        schema:
-          type: string
-      - in: query
-        name: parent__exact
-        schema:
-          type: string
-      - in: query
-        name: parent__in
-        schema:
-          type: string
-      - in: query
-        name: parent__isnull
-        schema:
-          type: string
-      - in: query
-        name: updated__gte
-        schema:
-          type: string
-      - in: query
-        name: updated__lte
-        schema:
-          type: string
+        - in: query
+          name: created__gte
+          schema:
+            type: string
+        - in: query
+          name: created__lte
+          schema:
+            type: string
+        - in: query
+          name: description__contains
+          schema:
+            type: string
+        - in: query
+          name: description__exact
+          schema:
+            type: string
+        - in: path
+          name: id
+          schema:
+            type: string
+            format: uuid
+          description: A UUID string identifying this custom group.
+          required: true
+        - in: query
+          name: id__exact
+          schema:
+            type: string
+        - in: query
+          name: id__in
+          schema:
+            type: string
+        - in: query
+          name: name__contains
+          schema:
+            type: string
+        - in: query
+          name: name__exact
+          schema:
+            type: string
+        - in: query
+          name: parent__exact
+          schema:
+            type: string
+        - in: query
+          name: parent__in
+          schema:
+            type: string
+        - in: query
+          name: parent__isnull
+          schema:
+            type: string
+        - in: query
+          name: updated__gte
+          schema:
+            type: string
+        - in: query
+          name: updated__lte
+          schema:
+            type: string
       tags:
-      - v1
+        - groups
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CustomGroup'
+              $ref: "#/components/schemas/CustomGroup"
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/CustomGroup'
+              $ref: "#/components/schemas/CustomGroup"
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/CustomGroup'
+              $ref: "#/components/schemas/CustomGroup"
         required: true
       responses:
-        '200':
+        "200":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CustomGroup'
-          description: ''
+                $ref: "#/components/schemas/CustomGroup"
+          description: ""
     patch:
-      operationId: v1_groups_partial_update
+      operationId: groups_partial_update
       description: |-
         This viewset provides dynamically generated
         filters by applying defined filters on generic
         queryset.
       parameters:
-      - in: query
-        name: created__gte
-        schema:
-          type: string
-      - in: query
-        name: created__lte
-        schema:
-          type: string
-      - in: query
-        name: description__contains
-        schema:
-          type: string
-      - in: query
-        name: description__exact
-        schema:
-          type: string
-      - in: path
-        name: id
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this custom group.
-        required: true
-      - in: query
-        name: id__exact
-        schema:
-          type: string
-      - in: query
-        name: id__in
-        schema:
-          type: string
-      - in: query
-        name: name__contains
-        schema:
-          type: string
-      - in: query
-        name: name__exact
-        schema:
-          type: string
-      - in: query
-        name: parent__exact
-        schema:
-          type: string
-      - in: query
-        name: parent__in
-        schema:
-          type: string
-      - in: query
-        name: parent__isnull
-        schema:
-          type: string
-      - in: query
-        name: updated__gte
-        schema:
-          type: string
-      - in: query
-        name: updated__lte
-        schema:
-          type: string
+        - in: query
+          name: created__gte
+          schema:
+            type: string
+        - in: query
+          name: created__lte
+          schema:
+            type: string
+        - in: query
+          name: description__contains
+          schema:
+            type: string
+        - in: query
+          name: description__exact
+          schema:
+            type: string
+        - in: path
+          name: id
+          schema:
+            type: string
+            format: uuid
+          description: A UUID string identifying this custom group.
+          required: true
+        - in: query
+          name: id__exact
+          schema:
+            type: string
+        - in: query
+          name: id__in
+          schema:
+            type: string
+        - in: query
+          name: name__contains
+          schema:
+            type: string
+        - in: query
+          name: name__exact
+          schema:
+            type: string
+        - in: query
+          name: parent__exact
+          schema:
+            type: string
+        - in: query
+          name: parent__in
+          schema:
+            type: string
+        - in: query
+          name: parent__isnull
+          schema:
+            type: string
+        - in: query
+          name: updated__gte
+          schema:
+            type: string
+        - in: query
+          name: updated__lte
+          schema:
+            type: string
       tags:
-      - v1
+        - groups
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PatchedCustomGroup'
+              $ref: "#/components/schemas/PatchedCustomGroup"
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/PatchedCustomGroup'
+              $ref: "#/components/schemas/PatchedCustomGroup"
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/PatchedCustomGroup'
+              $ref: "#/components/schemas/PatchedCustomGroup"
       responses:
-        '200':
+        "200":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CustomGroup'
-          description: ''
+                $ref: "#/components/schemas/CustomGroup"
+          description: ""
     delete:
-      operationId: v1_groups_destroy
+      operationId: groups_destroy
       description: |-
         This viewset provides dynamically generated
         filters by applying defined filters on generic
         queryset.
       parameters:
-      - in: query
-        name: created__gte
-        schema:
-          type: string
-      - in: query
-        name: created__lte
-        schema:
-          type: string
-      - in: query
-        name: description__contains
-        schema:
-          type: string
-      - in: query
-        name: description__exact
-        schema:
-          type: string
-      - in: path
-        name: id
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this custom group.
-        required: true
-      - in: query
-        name: id__exact
-        schema:
-          type: string
-      - in: query
-        name: id__in
-        schema:
-          type: string
-      - in: query
-        name: name__contains
-        schema:
-          type: string
-      - in: query
-        name: name__exact
-        schema:
-          type: string
-      - in: query
-        name: parent__exact
-        schema:
-          type: string
-      - in: query
-        name: parent__in
-        schema:
-          type: string
-      - in: query
-        name: parent__isnull
-        schema:
-          type: string
-      - in: query
-        name: updated__gte
-        schema:
-          type: string
-      - in: query
-        name: updated__lte
-        schema:
-          type: string
+        - in: query
+          name: created__gte
+          schema:
+            type: string
+        - in: query
+          name: created__lte
+          schema:
+            type: string
+        - in: query
+          name: description__contains
+          schema:
+            type: string
+        - in: query
+          name: description__exact
+          schema:
+            type: string
+        - in: path
+          name: id
+          schema:
+            type: string
+            format: uuid
+          description: A UUID string identifying this custom group.
+          required: true
+        - in: query
+          name: id__exact
+          schema:
+            type: string
+        - in: query
+          name: id__in
+          schema:
+            type: string
+        - in: query
+          name: name__contains
+          schema:
+            type: string
+        - in: query
+          name: name__exact
+          schema:
+            type: string
+        - in: query
+          name: parent__exact
+          schema:
+            type: string
+        - in: query
+          name: parent__in
+          schema:
+            type: string
+        - in: query
+          name: parent__isnull
+          schema:
+            type: string
+        - in: query
+          name: updated__gte
+          schema:
+            type: string
+        - in: query
+          name: updated__lte
+          schema:
+            type: string
       tags:
-      - v1
+        - groups
       responses:
-        '204':
+        "204":
           description: No response body
   /api/v1/groups/{id}/members/:
     put:
@@ -705,67 +705,67 @@ paths:
         filters by applying defined filters on generic
         queryset.
       parameters:
-      - in: query
-        name: created__gte
-        schema:
-          type: string
-      - in: query
-        name: created__lte
-        schema:
-          type: string
-      - in: query
-        name: description__contains
-        schema:
-          type: string
-      - in: query
-        name: description__exact
-        schema:
-          type: string
-      - in: path
-        name: id
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this custom group.
-        required: true
-      - in: query
-        name: id__exact
-        schema:
-          type: string
-      - in: query
-        name: id__in
-        schema:
-          type: string
-      - in: query
-        name: name__contains
-        schema:
-          type: string
-      - in: query
-        name: name__exact
-        schema:
-          type: string
-      - in: query
-        name: parent__exact
-        schema:
-          type: string
-      - in: query
-        name: parent__in
-        schema:
-          type: string
-      - in: query
-        name: parent__isnull
-        schema:
-          type: string
-      - in: query
-        name: updated__gte
-        schema:
-          type: string
-      - in: query
-        name: updated__lte
-        schema:
-          type: string
+        - in: query
+          name: created__gte
+          schema:
+            type: string
+        - in: query
+          name: created__lte
+          schema:
+            type: string
+        - in: query
+          name: description__contains
+          schema:
+            type: string
+        - in: query
+          name: description__exact
+          schema:
+            type: string
+        - in: path
+          name: id
+          schema:
+            type: string
+            format: uuid
+          description: A UUID string identifying this custom group.
+          required: true
+        - in: query
+          name: id__exact
+          schema:
+            type: string
+        - in: query
+          name: id__in
+          schema:
+            type: string
+        - in: query
+          name: name__contains
+          schema:
+            type: string
+        - in: query
+          name: name__exact
+          schema:
+            type: string
+        - in: query
+          name: parent__exact
+          schema:
+            type: string
+        - in: query
+          name: parent__in
+          schema:
+            type: string
+        - in: query
+          name: parent__isnull
+          schema:
+            type: string
+        - in: query
+          name: updated__gte
+          schema:
+            type: string
+        - in: query
+          name: updated__lte
+          schema:
+            type: string
       tags:
-      - v1
+        - groups
       requestBody:
         content:
           application/json:
@@ -778,681 +778,681 @@ paths:
                     type: string
                     format: uuid
       responses:
-        '200':
+        "200":
           content:
             application/json:
               schema:
                 type: array
                 items:
                   type: string
-          description: ''
+          description: ""
   /api/v1/organizations/:
     get:
-      operationId: v1_organizations_list
+      operationId: organizations_list
       parameters:
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
+        - name: ordering
+          required: false
+          in: query
+          description: Which field to use when ordering the results.
+          schema:
+            type: string
+        - name: page
+          required: false
+          in: query
+          description: A page number within the paginated result set.
+          schema:
+            type: integer
+        - name: size
+          required: false
+          in: query
+          description: Number of results to return per page.
+          schema:
+            type: integer
       tags:
-      - v1
+        - organizations
       responses:
-        '200':
+        "200":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PaginatedOrganizationList'
-          description: ''
+                $ref: "#/components/schemas/PaginatedOrganizationList"
+          description: ""
     post:
-      operationId: v1_organizations_create
+      operationId: organizations_create
       tags:
-      - v1
+        - organizations
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Organization'
+              $ref: "#/components/schemas/Organization"
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/Organization'
+              $ref: "#/components/schemas/Organization"
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/Organization'
+              $ref: "#/components/schemas/Organization"
         required: true
       responses:
-        '201':
+        "201":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Organization'
-          description: ''
+                $ref: "#/components/schemas/Organization"
+          description: ""
   /api/v1/organizations/{id}/:
     get:
-      operationId: v1_organizations_retrieve
+      operationId: organizations_retrieve
       parameters:
-      - in: path
-        name: id
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this organization.
-        required: true
+        - in: path
+          name: id
+          schema:
+            type: string
+            format: uuid
+          description: A UUID string identifying this organization.
+          required: true
       tags:
-      - v1
+        - organizations
       responses:
-        '200':
+        "200":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Organization'
-          description: ''
+                $ref: "#/components/schemas/Organization"
+          description: ""
     put:
-      operationId: v1_organizations_update
+      operationId: organizations_update
       parameters:
-      - in: path
-        name: id
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this organization.
-        required: true
+        - in: path
+          name: id
+          schema:
+            type: string
+            format: uuid
+          description: A UUID string identifying this organization.
+          required: true
       tags:
-      - v1
+        - organizations
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Organization'
+              $ref: "#/components/schemas/Organization"
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/Organization'
+              $ref: "#/components/schemas/Organization"
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/Organization'
+              $ref: "#/components/schemas/Organization"
         required: true
       responses:
-        '200':
+        "200":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Organization'
-          description: ''
+                $ref: "#/components/schemas/Organization"
+          description: ""
     patch:
-      operationId: v1_organizations_partial_update
+      operationId: organizations_partial_update
       parameters:
-      - in: path
-        name: id
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this organization.
-        required: true
+        - in: path
+          name: id
+          schema:
+            type: string
+            format: uuid
+          description: A UUID string identifying this organization.
+          required: true
       tags:
-      - v1
+        - organizations
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PatchedOrganization'
+              $ref: "#/components/schemas/PatchedOrganization"
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/PatchedOrganization'
+              $ref: "#/components/schemas/PatchedOrganization"
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/PatchedOrganization'
+              $ref: "#/components/schemas/PatchedOrganization"
       responses:
-        '200':
+        "200":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Organization'
-          description: ''
+                $ref: "#/components/schemas/Organization"
+          description: ""
     delete:
-      operationId: v1_organizations_destroy
+      operationId: organizations_destroy
       parameters:
-      - in: path
-        name: id
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this organization.
-        required: true
+        - in: path
+          name: id
+          schema:
+            type: string
+            format: uuid
+          description: A UUID string identifying this organization.
+          required: true
       tags:
-      - v1
+        - organizations
       responses:
-        '204':
+        "204":
           description: No response body
   /api/v1/users/:
     get:
-      operationId: v1_users_list
+      operationId: users_list
       description: |-
         This viewset provides dynamically generated
         filters by applying defined filters on generic
         queryset.
       parameters:
-      - in: query
-        name: date_joined
-        schema:
-          type: string
-      - in: query
-        name: email
-        schema:
-          type: string
-      - in: query
-        name: email__contains
-        schema:
-          type: string
-      - in: query
-        name: first_name
-        schema:
-          type: string
-      - in: query
-        name: first_name__contains
-        schema:
-          type: string
-      - in: query
-        name: first_name__exact
-        schema:
-          type: string
-      - in: query
-        name: groups__id__exact
-        schema:
-          type: string
-      - in: query
-        name: groups__id__in
-        schema:
-          type: string
-      - in: query
-        name: id
-        schema:
-          type: string
-          format: uuid
-      - in: query
-        name: id__exact
-        schema:
-          type: string
-      - in: query
-        name: id__in
-        schema:
-          type: string
-      - in: query
-        name: is_active
-        schema:
-          type: string
-      - in: query
-        name: last_name
-        schema:
-          type: string
-      - in: query
-        name: last_name__contains
-        schema:
-          type: string
-      - in: query
-        name: last_name__exact
-        schema:
-          type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
+        - in: query
+          name: date_joined
+          schema:
+            type: string
+        - in: query
+          name: email
+          schema:
+            type: string
+        - in: query
+          name: email__contains
+          schema:
+            type: string
+        - in: query
+          name: first_name
+          schema:
+            type: string
+        - in: query
+          name: first_name__contains
+          schema:
+            type: string
+        - in: query
+          name: first_name__exact
+          schema:
+            type: string
+        - in: query
+          name: groups__id__exact
+          schema:
+            type: string
+        - in: query
+          name: groups__id__in
+          schema:
+            type: string
+        - in: query
+          name: id
+          schema:
+            type: string
+            format: uuid
+        - in: query
+          name: id__exact
+          schema:
+            type: string
+        - in: query
+          name: id__in
+          schema:
+            type: string
+        - in: query
+          name: is_active
+          schema:
+            type: string
+        - in: query
+          name: last_name
+          schema:
+            type: string
+        - in: query
+          name: last_name__contains
+          schema:
+            type: string
+        - in: query
+          name: last_name__exact
+          schema:
+            type: string
+        - name: ordering
+          required: false
+          in: query
+          description: Which field to use when ordering the results.
+          schema:
+            type: string
+        - name: page
+          required: false
+          in: query
+          description: A page number within the paginated result set.
+          schema:
+            type: integer
+        - name: size
+          required: false
+          in: query
+          description: Number of results to return per page.
+          schema:
+            type: integer
       tags:
-      - v1
+        - users
       responses:
-        '200':
+        "200":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PaginatedCustomUserList'
-          description: ''
+                $ref: "#/components/schemas/PaginatedCustomUserList"
+          description: ""
     post:
-      operationId: v1_users_create
+      operationId: users_create
       description: |-
         This viewset provides dynamically generated
         filters by applying defined filters on generic
         queryset.
       parameters:
-      - in: query
-        name: date_joined
-        schema:
-          type: string
-      - in: query
-        name: email__contains
-        schema:
-          type: string
-      - in: query
-        name: first_name__contains
-        schema:
-          type: string
-      - in: query
-        name: first_name__exact
-        schema:
-          type: string
-      - in: query
-        name: groups__id__exact
-        schema:
-          type: string
-      - in: query
-        name: groups__id__in
-        schema:
-          type: string
-      - in: query
-        name: id__exact
-        schema:
-          type: string
-      - in: query
-        name: id__in
-        schema:
-          type: string
-      - in: query
-        name: is_active
-        schema:
-          type: string
-      - in: query
-        name: last_name__contains
-        schema:
-          type: string
-      - in: query
-        name: last_name__exact
-        schema:
-          type: string
+        - in: query
+          name: date_joined
+          schema:
+            type: string
+        - in: query
+          name: email__contains
+          schema:
+            type: string
+        - in: query
+          name: first_name__contains
+          schema:
+            type: string
+        - in: query
+          name: first_name__exact
+          schema:
+            type: string
+        - in: query
+          name: groups__id__exact
+          schema:
+            type: string
+        - in: query
+          name: groups__id__in
+          schema:
+            type: string
+        - in: query
+          name: id__exact
+          schema:
+            type: string
+        - in: query
+          name: id__in
+          schema:
+            type: string
+        - in: query
+          name: is_active
+          schema:
+            type: string
+        - in: query
+          name: last_name__contains
+          schema:
+            type: string
+        - in: query
+          name: last_name__exact
+          schema:
+            type: string
       tags:
-      - v1
+        - users
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CustomUser'
+              $ref: "#/components/schemas/CustomUser"
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/CustomUser'
+              $ref: "#/components/schemas/CustomUser"
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/CustomUser'
+              $ref: "#/components/schemas/CustomUser"
         required: true
       responses:
-        '201':
+        "201":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CustomUser'
-          description: ''
+                $ref: "#/components/schemas/CustomUser"
+          description: ""
   /api/v1/users/{id}/:
     get:
-      operationId: v1_users_retrieve
+      operationId: users_retrieve
       description: |-
         This viewset provides dynamically generated
         filters by applying defined filters on generic
         queryset.
       parameters:
-      - in: query
-        name: date_joined
-        schema:
-          type: string
-      - in: query
-        name: email__contains
-        schema:
-          type: string
-      - in: query
-        name: first_name__contains
-        schema:
-          type: string
-      - in: query
-        name: first_name__exact
-        schema:
-          type: string
-      - in: query
-        name: groups__id__exact
-        schema:
-          type: string
-      - in: query
-        name: groups__id__in
-        schema:
-          type: string
-      - in: path
-        name: id
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this user.
-        required: true
-      - in: query
-        name: id__exact
-        schema:
-          type: string
-      - in: query
-        name: id__in
-        schema:
-          type: string
-      - in: query
-        name: is_active
-        schema:
-          type: string
-      - in: query
-        name: last_name__contains
-        schema:
-          type: string
-      - in: query
-        name: last_name__exact
-        schema:
-          type: string
+        - in: query
+          name: date_joined
+          schema:
+            type: string
+        - in: query
+          name: email__contains
+          schema:
+            type: string
+        - in: query
+          name: first_name__contains
+          schema:
+            type: string
+        - in: query
+          name: first_name__exact
+          schema:
+            type: string
+        - in: query
+          name: groups__id__exact
+          schema:
+            type: string
+        - in: query
+          name: groups__id__in
+          schema:
+            type: string
+        - in: path
+          name: id
+          schema:
+            type: string
+            format: uuid
+          description: A UUID string identifying this user.
+          required: true
+        - in: query
+          name: id__exact
+          schema:
+            type: string
+        - in: query
+          name: id__in
+          schema:
+            type: string
+        - in: query
+          name: is_active
+          schema:
+            type: string
+        - in: query
+          name: last_name__contains
+          schema:
+            type: string
+        - in: query
+          name: last_name__exact
+          schema:
+            type: string
       tags:
-      - v1
+        - users
       responses:
-        '200':
+        "200":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CustomUser'
-          description: ''
+                $ref: "#/components/schemas/CustomUser"
+          description: ""
     put:
-      operationId: v1_users_update
+      operationId: users_update
       description: |-
         This viewset provides dynamically generated
         filters by applying defined filters on generic
         queryset.
       parameters:
-      - in: query
-        name: date_joined
-        schema:
-          type: string
-      - in: query
-        name: email__contains
-        schema:
-          type: string
-      - in: query
-        name: first_name__contains
-        schema:
-          type: string
-      - in: query
-        name: first_name__exact
-        schema:
-          type: string
-      - in: query
-        name: groups__id__exact
-        schema:
-          type: string
-      - in: query
-        name: groups__id__in
-        schema:
-          type: string
-      - in: path
-        name: id
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this user.
-        required: true
-      - in: query
-        name: id__exact
-        schema:
-          type: string
-      - in: query
-        name: id__in
-        schema:
-          type: string
-      - in: query
-        name: is_active
-        schema:
-          type: string
-      - in: query
-        name: last_name__contains
-        schema:
-          type: string
-      - in: query
-        name: last_name__exact
-        schema:
-          type: string
+        - in: query
+          name: date_joined
+          schema:
+            type: string
+        - in: query
+          name: email__contains
+          schema:
+            type: string
+        - in: query
+          name: first_name__contains
+          schema:
+            type: string
+        - in: query
+          name: first_name__exact
+          schema:
+            type: string
+        - in: query
+          name: groups__id__exact
+          schema:
+            type: string
+        - in: query
+          name: groups__id__in
+          schema:
+            type: string
+        - in: path
+          name: id
+          schema:
+            type: string
+            format: uuid
+          description: A UUID string identifying this user.
+          required: true
+        - in: query
+          name: id__exact
+          schema:
+            type: string
+        - in: query
+          name: id__in
+          schema:
+            type: string
+        - in: query
+          name: is_active
+          schema:
+            type: string
+        - in: query
+          name: last_name__contains
+          schema:
+            type: string
+        - in: query
+          name: last_name__exact
+          schema:
+            type: string
       tags:
-      - v1
+        - users
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CustomUser'
+              $ref: "#/components/schemas/CustomUser"
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/CustomUser'
+              $ref: "#/components/schemas/CustomUser"
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/CustomUser'
+              $ref: "#/components/schemas/CustomUser"
         required: true
       responses:
-        '200':
+        "200":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CustomUser'
-          description: ''
+                $ref: "#/components/schemas/CustomUser"
+          description: ""
     patch:
-      operationId: v1_users_partial_update
+      operationId: users_partial_update
       description: |-
         This viewset provides dynamically generated
         filters by applying defined filters on generic
         queryset.
       parameters:
-      - in: query
-        name: date_joined
-        schema:
-          type: string
-      - in: query
-        name: email__contains
-        schema:
-          type: string
-      - in: query
-        name: first_name__contains
-        schema:
-          type: string
-      - in: query
-        name: first_name__exact
-        schema:
-          type: string
-      - in: query
-        name: groups__id__exact
-        schema:
-          type: string
-      - in: query
-        name: groups__id__in
-        schema:
-          type: string
-      - in: path
-        name: id
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this user.
-        required: true
-      - in: query
-        name: id__exact
-        schema:
-          type: string
-      - in: query
-        name: id__in
-        schema:
-          type: string
-      - in: query
-        name: is_active
-        schema:
-          type: string
-      - in: query
-        name: last_name__contains
-        schema:
-          type: string
-      - in: query
-        name: last_name__exact
-        schema:
-          type: string
+        - in: query
+          name: date_joined
+          schema:
+            type: string
+        - in: query
+          name: email__contains
+          schema:
+            type: string
+        - in: query
+          name: first_name__contains
+          schema:
+            type: string
+        - in: query
+          name: first_name__exact
+          schema:
+            type: string
+        - in: query
+          name: groups__id__exact
+          schema:
+            type: string
+        - in: query
+          name: groups__id__in
+          schema:
+            type: string
+        - in: path
+          name: id
+          schema:
+            type: string
+            format: uuid
+          description: A UUID string identifying this user.
+          required: true
+        - in: query
+          name: id__exact
+          schema:
+            type: string
+        - in: query
+          name: id__in
+          schema:
+            type: string
+        - in: query
+          name: is_active
+          schema:
+            type: string
+        - in: query
+          name: last_name__contains
+          schema:
+            type: string
+        - in: query
+          name: last_name__exact
+          schema:
+            type: string
       tags:
-      - v1
+        - users
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PatchedCustomUser'
+              $ref: "#/components/schemas/PatchedCustomUser"
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/PatchedCustomUser'
+              $ref: "#/components/schemas/PatchedCustomUser"
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/PatchedCustomUser'
+              $ref: "#/components/schemas/PatchedCustomUser"
       responses:
-        '200':
+        "200":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CustomUser'
-          description: ''
+                $ref: "#/components/schemas/CustomUser"
+          description: ""
     delete:
-      operationId: v1_users_destroy
+      operationId: users_destroy
       description: |-
         This viewset provides dynamically generated
         filters by applying defined filters on generic
         queryset.
       parameters:
-      - in: query
-        name: date_joined
-        schema:
-          type: string
-      - in: query
-        name: email__contains
-        schema:
-          type: string
-      - in: query
-        name: first_name__contains
-        schema:
-          type: string
-      - in: query
-        name: first_name__exact
-        schema:
-          type: string
-      - in: query
-        name: groups__id__exact
-        schema:
-          type: string
-      - in: query
-        name: groups__id__in
-        schema:
-          type: string
-      - in: path
-        name: id
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this user.
-        required: true
-      - in: query
-        name: id__exact
-        schema:
-          type: string
-      - in: query
-        name: id__in
-        schema:
-          type: string
-      - in: query
-        name: is_active
-        schema:
-          type: string
-      - in: query
-        name: last_name__contains
-        schema:
-          type: string
-      - in: query
-        name: last_name__exact
-        schema:
-          type: string
+        - in: query
+          name: date_joined
+          schema:
+            type: string
+        - in: query
+          name: email__contains
+          schema:
+            type: string
+        - in: query
+          name: first_name__contains
+          schema:
+            type: string
+        - in: query
+          name: first_name__exact
+          schema:
+            type: string
+        - in: query
+          name: groups__id__exact
+          schema:
+            type: string
+        - in: query
+          name: groups__id__in
+          schema:
+            type: string
+        - in: path
+          name: id
+          schema:
+            type: string
+            format: uuid
+          description: A UUID string identifying this user.
+          required: true
+        - in: query
+          name: id__exact
+          schema:
+            type: string
+        - in: query
+          name: id__in
+          schema:
+            type: string
+        - in: query
+          name: is_active
+          schema:
+            type: string
+        - in: query
+          name: last_name__contains
+          schema:
+            type: string
+        - in: query
+          name: last_name__exact
+          schema:
+            type: string
       tags:
-      - v1
+        - users
       responses:
-        '204':
+        "204":
           description: No response body
   /api/v1/users/me/:
     get:
-      operationId: v1_users_me_retrieve
+      operationId: users_me_retrieve
       description: |-
         This viewset provides dynamically generated
         filters by applying defined filters on generic
         queryset.
       parameters:
-      - in: query
-        name: date_joined
-        schema:
-          type: string
-      - in: query
-        name: email__contains
-        schema:
-          type: string
-      - in: query
-        name: first_name__contains
-        schema:
-          type: string
-      - in: query
-        name: first_name__exact
-        schema:
-          type: string
-      - in: query
-        name: groups__id__exact
-        schema:
-          type: string
-      - in: query
-        name: groups__id__in
-        schema:
-          type: string
-      - in: query
-        name: id__exact
-        schema:
-          type: string
-      - in: query
-        name: id__in
-        schema:
-          type: string
-      - in: query
-        name: is_active
-        schema:
-          type: string
-      - in: query
-        name: last_name__contains
-        schema:
-          type: string
-      - in: query
-        name: last_name__exact
-        schema:
-          type: string
+        - in: query
+          name: date_joined
+          schema:
+            type: string
+        - in: query
+          name: email__contains
+          schema:
+            type: string
+        - in: query
+          name: first_name__contains
+          schema:
+            type: string
+        - in: query
+          name: first_name__exact
+          schema:
+            type: string
+        - in: query
+          name: groups__id__exact
+          schema:
+            type: string
+        - in: query
+          name: groups__id__in
+          schema:
+            type: string
+        - in: query
+          name: id__exact
+          schema:
+            type: string
+        - in: query
+          name: id__in
+          schema:
+            type: string
+        - in: query
+          name: is_active
+          schema:
+            type: string
+        - in: query
+          name: last_name__contains
+          schema:
+            type: string
+        - in: query
+          name: last_name__exact
+          schema:
+            type: string
       tags:
-      - v1
+        - users
       responses:
-        '200':
+        "200":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CustomUser'
-          description: ''
+                $ref: "#/components/schemas/CustomUser"
+          description: ""
 components:
   schemas:
     CustomGroup:
@@ -1468,7 +1468,7 @@ components:
         members:
           type: array
           items:
-            $ref: '#/components/schemas/CustomMembers'
+            $ref: "#/components/schemas/CustomMembers"
           readOnly: true
         name:
           type: string
@@ -1490,12 +1490,12 @@ components:
           format: uuid
           nullable: true
       required:
-      - created
-      - id
-      - member_count
-      - members
-      - name
-      - updated
+        - created
+        - id
+        - member_count
+        - members
+        - name
+        - updated
     CustomMembers:
       type: object
       properties:
@@ -1521,12 +1521,12 @@ components:
           format: date-time
           readOnly: true
       required:
-      - avatar
-      - date_joined
-      - email
-      - first_name
-      - id
-      - last_name
+        - avatar
+        - date_joined
+        - email
+        - first_name
+        - id
+        - last_name
     CustomUser:
       type: object
       properties:
@@ -1555,17 +1555,17 @@ components:
         groups:
           type: array
           items:
-            $ref: '#/components/schemas/CustomUserGroup'
+            $ref: "#/components/schemas/CustomUserGroup"
           readOnly: true
         date_joined:
           type: string
           format: date-time
           readOnly: true
       required:
-      - date_joined
-      - email
-      - groups
-      - id
+        - date_joined
+        - email
+        - groups
+        - id
     CustomUserGroup:
       type: object
       properties:
@@ -1577,8 +1577,8 @@ components:
           type: string
           readOnly: true
       required:
-      - id
-      - name
+        - id
+        - name
     Nested:
       type: object
       properties:
@@ -1606,10 +1606,10 @@ components:
           format: uuid
           nullable: true
       required:
-      - created
-      - id
-      - name
-      - updated
+        - created
+        - id
+        - name
+        - updated
     Organization:
       type: object
       properties:
@@ -1625,17 +1625,17 @@ components:
           nullable: true
         root:
           allOf:
-          - $ref: '#/components/schemas/Nested'
+            - $ref: "#/components/schemas/Nested"
           readOnly: true
       required:
-      - id
-      - name
-      - root
+        - id
+        - name
+        - root
     PaginatedCustomGroupList:
       type: object
       required:
-      - count
-      - results
+        - count
+        - results
       properties:
         count:
           type: integer
@@ -1651,12 +1651,12 @@ components:
         results:
           type: array
           items:
-            $ref: '#/components/schemas/CustomGroup'
+            $ref: "#/components/schemas/CustomGroup"
     PaginatedCustomUserList:
       type: object
       required:
-      - count
-      - results
+        - count
+        - results
       properties:
         count:
           type: integer
@@ -1672,12 +1672,12 @@ components:
         results:
           type: array
           items:
-            $ref: '#/components/schemas/CustomUser'
+            $ref: "#/components/schemas/CustomUser"
     PaginatedOrganizationList:
       type: object
       required:
-      - count
-      - results
+        - count
+        - results
       properties:
         count:
           type: integer
@@ -1693,7 +1693,7 @@ components:
         results:
           type: array
           items:
-            $ref: '#/components/schemas/Organization'
+            $ref: "#/components/schemas/Organization"
     PatchedCustomGroup:
       type: object
       properties:
@@ -1707,7 +1707,7 @@ components:
         members:
           type: array
           items:
-            $ref: '#/components/schemas/CustomMembers'
+            $ref: "#/components/schemas/CustomMembers"
           readOnly: true
         name:
           type: string
@@ -1756,7 +1756,7 @@ components:
         groups:
           type: array
           items:
-            $ref: '#/components/schemas/CustomUserGroup'
+            $ref: "#/components/schemas/CustomUserGroup"
           readOnly: true
         date_joined:
           type: string
@@ -1777,7 +1777,7 @@ components:
           nullable: true
         root:
           allOf:
-          - $ref: '#/components/schemas/Nested'
+            - $ref: "#/components/schemas/Nested"
           readOnly: true
     TokenSessions:
       type: object
@@ -1813,10 +1813,10 @@ components:
         expires_in_str:
           type: string
       required:
-      - client
-      - created
-      - expires_in_str
-      - expiry
-      - has_expired
-      - id
-      - is_current
+        - client
+        - created
+        - expires_in_str
+        - expiry
+        - has_expired
+        - id
+        - is_current
