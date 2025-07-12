@@ -8,13 +8,16 @@ from accounts.managers import CustomUserManager
 from .fields import CustomURLField
 from durin.models import AuthToken, Client
 from django.conf import settings
+from django.db import connection
+from django.core.validators import DomainNameValidator
+
+
+from access_control.models import UserResourcePermission, ResourcePermission
 
 
 class CustomGroup(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField("name", blank=False, null=False)
-    created = models.DateTimeField(null=False, auto_now_add=True)
-    updated = models.DateTimeField(null=False, auto_now=True)
     description = models.TextField(null=True, blank=True, default="")
 
     parent = models.ForeignKey(
@@ -26,6 +29,12 @@ class CustomGroup(models.Model):
         default=None,
     )
     hidden = models.BooleanField(default=False, null=False)
+    permission = models.OneToOneField(
+        ResourcePermission, null=True, on_delete=models.SET_NULL, related_name="group"
+    )
+
+    created = models.DateTimeField(null=False, auto_now_add=True)
+    updated = models.DateTimeField(null=False, auto_now=True)
 
     def __str__(self):
         return f"{self.name}"
@@ -38,6 +47,12 @@ class Organization(models.Model):
     root = models.ForeignKey(
         CustomGroup, null=True, blank=False, on_delete=models.SET_NULL
     )
+    host = models.CharField(
+        validators=[DomainNameValidator()], null=False, blank=False, unique=True
+    )
+
+    created = models.DateTimeField(null=False, auto_now_add=True)
+    updated = models.DateTimeField(null=False, auto_now=True)
 
     def __str__(self):
         return f"{self.name}"
@@ -52,11 +67,17 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField("active", default=True)
     avatar = models.ImageField(upload_to="avatars/", null=True, blank=True)
     is_staff = models.BooleanField("is staff", default=True)
+
+    # custom attribute for id'ing users created for envs
+    is_alias = models.BooleanField(default=False)
+
     groups = models.ManyToManyField(
         CustomGroup,
         blank=False,
         related_name="members",
     )
+    created = models.DateTimeField(null=False, auto_now_add=True)
+    updated = models.DateTimeField(null=False, auto_now=True)
     # user_permissions = models.ManyToManyField(
     #     to="auth.Permission",
     #     related_name="custom_users",
@@ -96,10 +117,11 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 class EnvironmentManager(models.Manager):
     def create(self, **kwargs):
         auth_user = CustomUser.objects.create(
-            email=f"{uuid.uuid4()}@{settings.HOST_NAME}"
+            email=f"{uuid.uuid4()}@{settings.HOST_NAME}",
+            is_staff=False,
+            is_alias=True,
         )
-        password = str(uuid.uuid4())
-        auth_user.set_password(password)
+        auth_user.set_password(str(uuid.uuid4()))
         auth_user.save()
         client = Client.objects.create(name=kwargs.get("name"))
         client.save()
@@ -107,16 +129,25 @@ class EnvironmentManager(models.Manager):
         token.save()
 
         uname = auth_user.email.split("@")[0]
-        host = settings.HOST_NAME
+        password = str(uuid.uuid4())
+        host = kwargs.get("parent_org").host
         port = settings.DATABASES["default"]["PORT"]
         schema = settings.DB_SCHEMA
         name = settings.DB_NAME
+
+        with connection.cursor() as cursor:
+            cursor.execute(f"CREATE USER \"{uname}\" WITH PASSWORD '{password}';")
+            cursor.execute(
+                f'GRANT SELECT ON TABLE "{schema}"."{UserResourcePermission._meta.db_table}" TO "{uname}";'
+            )
+
         instance = super(EnvironmentManager, self).create(
             **kwargs,
             auth_user=auth_user,
             url=settings.HOST_NAME,
             pg_url=f"postgres://{uname}:{password}@{host}:{port}/{name}?schema={schema}",
         )
+
         return instance
 
 
@@ -145,12 +176,7 @@ class Environment(models.Model):
 
     class Meta:
         ordering = ["created"]
-        constraints = [
-            models.UniqueConstraint(
-                fields=["name", "parent_org"],
-                name="unique token for org per client",
-            )
-        ]
+        unique_together = ["name", "parent_org"]
 
     def __str__(self):
         return f"{self.name}"

@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.core.management.base import BaseCommand
 from accounts.models import Organization, CustomGroup, Environment, CustomUser
 
@@ -9,7 +10,11 @@ class Command(BaseCommand):
         group = CustomGroup.objects.create(name="Default Group")
         group.members.add(CustomUser.objects.get(email="admin@admin.ca"))
         group.save()
-        org = Organization.objects.create(name="Default Org", root=group)
+        org = Organization.objects.create(
+            name="Default Org",
+            root=group,
+            host=settings.HOST_NAME, # default hostname
+        )
         org.save()
 
         env = Environment.objects.create(

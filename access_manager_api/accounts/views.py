@@ -1,9 +1,11 @@
 from common.strtobool import strtobool
 from common.filter_mappings import get_filter_mappings, arg_splitter
+
 # from common.mixins import PermissionViewMixin
-from .models import CustomGroup, Organization, CustomUser
+from .models import CustomGroup, Environment, Organization, CustomUser
 from .serializers import (
     CustomGroupSerializer,
+    EnvironmentSerializer,
     OrganizationSerializer,
     CustomUserSerializer,
 )
@@ -46,7 +48,9 @@ group_filters = get_filter_mappings(
     ],
 )
 class CustomGroupViewSet(
-    AccessViewSetMixin, FiltersMixin, viewsets.ModelViewSet
+    AccessViewSetMixin,
+    FiltersMixin,
+    viewsets.ModelViewSet,
 ):
     queryset = CustomGroup.objects.all()
     serializer_class = CustomGroupSerializer
@@ -154,3 +158,9 @@ class CustomUserViewSet(AccessViewSetMixin, FiltersMixin, viewsets.ModelViewSet)
     @action(detail=False, methods=["GET"])
     def me(self, request):
         return Response(self.get_serializer(request.user, many=False).data)
+
+
+class EnvironmentViewSet(AccessViewSetMixin, FiltersMixin, viewsets.ModelViewSet):
+    queryset = Environment.objects.all()
+    serializer_class = EnvironmentSerializer
+    access_policy = AccountsUsersAccessPolicy

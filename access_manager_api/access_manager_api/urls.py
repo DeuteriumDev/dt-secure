@@ -39,9 +39,14 @@ router.register(
     account_views.CustomGroupViewSet,
     basename="group",
 )
+router.register(
+    r"environments",
+    account_views.EnvironmentViewSet,
+    basename="environment",
+)
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    re_path(r"api/auth/", include("durin.urls")),
+    re_path(r"api/v1/auth/", include("durin.urls")),
     re_path(r"api/v1/", include(router.urls)),
 ]

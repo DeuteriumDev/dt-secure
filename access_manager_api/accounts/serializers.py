@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Organization, CustomUser, CustomGroup
+from .models import Environment, Organization, CustomUser, CustomGroup
 from drf_spectacular.utils import extend_schema_field
 from drf_spectacular.types import OpenApiTypes
 
@@ -55,3 +55,9 @@ class CustomGroupSerializer(serializers.ModelSerializer):
     @extend_schema_field(OpenApiTypes.INT)
     def get_member_count(self, obj):
         return obj.members.count()
+
+
+class EnvironmentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Environment
+        fields = "__all__"
