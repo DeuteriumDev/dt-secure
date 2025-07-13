@@ -69,6 +69,7 @@ class CustomGroupAdmin(ModelAdmin):
         "created",
         "updated",
         "group_members",
+        "sub_groups",
     )
 
     fieldsets = [
@@ -87,17 +88,26 @@ class CustomGroupAdmin(ModelAdmin):
         (
             None,
             {
-                "fields": ("group_members",),
+                "fields": ("group_members", "sub_groups"),
             },
         ),
     ]
 
     def group_members(self, obj):
         links = [
-            f'<a href="{reverse("admin:accounts_customuser_change", args=(user.id,))}">{user.email}</a>'
+            f'<li><a class="text-primary-600 dark:text-primary-500 underline" href="{reverse("admin:accounts_customuser_change", args=(user.id,))}">{user.email}</a></li>'
             for user in obj.members.all()
         ]
-        return mark_safe("<br>".join(links))
+        return mark_safe('<ul class="space-y-3">' + "".join(links) + "</ul>")
+
+    def sub_groups(self, obj):
+        links = [
+            f'<li><a class="text-primary-600 dark:text-primary-500 underline" href="{reverse("admin:accounts_customgroup_change", args=(group.id,))}">{group.name}</a></li>'
+            for group in obj.children.all()
+        ]
+        if len(links) == 0:
+            return mark_safe('<p>No sub groups</p>')
+        return mark_safe('<ul class="space-y-3">' + "".join(links) + "</ul>")
 
 
 class OrganizationAdmin(ModelAdmin):
