@@ -2,6 +2,7 @@ from rest_framework.routers import DefaultRouter
 from django.contrib import admin
 from django.urls import include, path, re_path
 from accounts import views as account_views
+from access_control import views as access_control_views
 
 
 """
@@ -49,4 +50,5 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     re_path(r"api/v1/auth/", include("durin.urls")),
     re_path(r"api/v1/", include(router.urls)),
+    path("api/v1/resources/", access_control_views.ResourcesView.as_view()),
 ]
