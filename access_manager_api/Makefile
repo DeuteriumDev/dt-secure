@@ -47,7 +47,7 @@ reset: clean ## Reset connected db
 .PHONY: reset
 
 dev: ## run the development server
-	@$(DJANGO) runserver
+	$(DJANGO) runserver_plus localhost:$(PORT)
 .PHONY: dev
 
 schema: ## generate the OpenAPI schema
@@ -57,7 +57,7 @@ schema: ## generate the OpenAPI schema
 .PHONY: schema
 
 shell:
-	@$(DJANGO) shell
+	@$(DJANGO) shell_plus --ipython
 .PHONY: shell
 
 services: ## run the supporting docker containers

@@ -8,12 +8,13 @@
       "name": "Poetry Python Debugger: Django",
       "type": "debugpy",
       "request": "launch",
-      "cwd": "${workspaceFolder}/django_api",
-      "args": ["runserver"],
-      "python": "${workspaceFolder}/django_api/.venv/bin/python",
+      "cwd": "${workspaceFolder}/access_manager_api",
+      "args": ["runserver_plus", "localhost:8833"],
+      "python": "${workspaceFolder}/access_manager_api/.venv/bin/python",
       "django": true,
       "autoStartBrowser": false,
-      "program": "${workspaceFolder}/django_api/manage.py"
-    },
+      "program": "${workspaceFolder}/access_manager_api/manage.py",
+      "envFile": "${workspaceFolder}/access_manager_api/.env"
+    }
   ]
 }
