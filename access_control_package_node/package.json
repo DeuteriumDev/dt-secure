@@ -1,0 +1,22 @@
+{
+  "name": "@deuterium/ac",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "lint": "eslint src --ext .ts",
+    "test": "echo \"No tests yet\""
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^24.1.0",
+    "eslint": "^8.0.0",
+    "typescript": "^5.0.0",
+    "vitest": "^3.2.4"
+  },
+  "packageManager": "yarn@4.9.2",
+  "dependencies": {
+    "yaml": "^2.8.0"
+  }
+}

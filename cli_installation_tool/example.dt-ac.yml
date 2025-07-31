@@ -1,5 +1,5 @@
 version: 0.1
-# example url: 'postgres://someuser:somepassword@somehost:381/somedatabase?schema=test
+# example url: "postgres://postgres:postgres@localhost:5432/postgres?schema=public"
 pg_url: ${POSTGRES_URL}
 
 # Enable this if running locally via docker
@@ -11,11 +11,14 @@ tables:
   - constants
   - hives
 
-dt_url: ${DT_URL}
+# defaults to remote server, set to `http://localhost:8899` for local dev
+# dt_url: https://api.deuterium.dev
+
+# API key of any given environment. NOTE: these keys are 1 to 1 (1 key for 1 env)
 dt_api_key: ${DT_API_KEY}
 
 # schema to store local db configs and metadata, defaults to "dt_schema" but
-# you can change it to "public" if needed
+# you can change it if needed
 dt_schema: dt_schema
 
 user_source:

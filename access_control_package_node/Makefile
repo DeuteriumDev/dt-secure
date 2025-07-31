@@ -20,10 +20,9 @@ tests: ## run the unit tests
 	@yarn vitest
 .PHONY: test
 
-clean: $(wildcard src/types)
-	@rm -rf src/types
+clean: $(wildcard ./dist)
+	@rm -rf dist
 
-
-types: clean
-	@yarn run ts-to-jsdoc ../access_control_package_node/src/types.ts -o src/types
-.PHONY: types
+build: clean ## build the lib
+	@yarn build
+.PHONY: build

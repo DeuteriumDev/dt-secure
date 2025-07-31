@@ -8,17 +8,9 @@ import { config } from "dotenv";
 
 import CONFIGS from "./configs.json";
 
-Object.freeze(CONFIGS);
+import "./types/types.js";
 
-/**
- * @typedef {Object} DtConfig
- * @property {string} dt_api_key - api key from config file
- * @property {string} dt_url - api key from config file
- * @property {string} pg_url - postgres connection string
- * @property {string} dt_schema - pg schema to install our configs and tables into
- * @property {boolean} [is_local] - optional config to enable loopback
- * @property {string} [security_table_name] - dt
- */
+Object.freeze(CONFIGS);
 
 /**
  * Get DT config from local file
@@ -50,12 +42,11 @@ export async function getConfig(file) {
  * @returns {Object}
  */
 export async function fetchRemoteConfig(fetchClient, dt_config) {
-  const response = await fetchClient(dt_config.dt_url, {
-    method: "post",
+  const response = await fetchClient(dt_config.dt_url || CONFIGS.dt_url, {
+    method: "get",
     headers: {
-      "api-key": dt_config.dt_api_key,
+      Authorization: `Token ${dt_config.dt_api_key}`,
     },
-    body: dt_config,
   });
   if (!response.ok) {
     throw new Error(
@@ -63,7 +54,9 @@ export async function fetchRemoteConfig(fetchClient, dt_config) {
     );
   }
   const data = await response.json();
-  return data;
+  const remoteConfig = _.get(data, "results[0]", null);
+  if (!remoteConfig) throw new Error("Invalid remote config");
+  return remoteConfig;
 }
 
 /**
@@ -73,7 +66,7 @@ export async function fetchRemoteConfig(fetchClient, dt_config) {
  */
 export async function addRemote(
   client,
-  { pg_url, dt_schema: schema, is_local, security_table_name }
+  { pg_url, dt_schema: schema, security_table_name }
 ) {
   const pgConfig = parse(pg_url);
 
@@ -86,7 +79,8 @@ export async function addRemote(
 
   // use default postgres port when running locally because the server will
   // be "internal" to docker ie default ports
-  const port = is_local ? "5432" : pgConfig.port;
+  const isLocal = /(localhost)|(127\.0\.0\.1)|(0\.0\.0\.0)/.test(pg_url);
+  const port = isLocal ? "5432" : pgConfig.port;
   // install the server
   await client.query(`
     CREATE EXTENSION IF NOT EXISTS postgres_fdw;
@@ -106,7 +100,7 @@ export async function addRemote(
   `);
 
   // make a circular table to test the connection with
-  if (is_local) {
+  if (isLocal) {
     // test server integration
     const testTableName = `demo-${String(Math.random()).slice(-4, -1)}`;
     const targetSchema = pgConfig.schema || "public";
@@ -137,10 +131,10 @@ export async function addRemote(
       IMPORT FOREIGN SCHEMA "${security_table_name.split(
         "."[0]
       )}" LIMIT TO ("${security_table_name
-      .split(".")
-      .join('"."')}") FROM SERVER "${schema}.${
-      CONFIGS.server
-    }" INTO "${schema}";
+        .split(".")
+        .join('"."')}") FROM SERVER "${schema}.${
+        CONFIGS.server
+      }" INTO "${schema}";
     `);
 
     const results = await client.query(

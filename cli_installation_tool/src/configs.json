@@ -3,5 +3,6 @@
   "readPolicy": "dt_policy_read",
   "getUser": "getCurrentUser",
   "resourceColumnName": "resource_id",
-  "canReadColumName": "can_read"
+  "canReadColumName": "can_read",
+  "dt_url": "https://api.deuterium.dev/api/v1/environments/"
 }
