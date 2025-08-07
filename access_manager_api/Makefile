@@ -29,7 +29,7 @@ init: migrations ## add admin user and add remix application JWT keys, see [.env
 	@$(DJANGO) createsuperuser --no-input --email admin@admin.ca
 .PHONY: init
 
-seed: migrations init ## add test user and supporting data
+seed: init ## add test user and supporting data
 	@$(DJANGO) seed
 .PHONY: seed
 
