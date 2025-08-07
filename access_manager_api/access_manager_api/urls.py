@@ -40,12 +40,6 @@ router.register(
     account_views.CustomGroupViewSet,
     basename="group",
 )
-router.register(
-    r"environments",
-    account_views.EnvironmentViewSet,
-    basename="environment",
-)
-
 
 resource_router = DefaultRouter()
 resource_router.register(
@@ -69,6 +63,12 @@ resource_router.register(
     access_control_views.ResourceUserGroupViewSet,
     basename="group",
 )
+resource_router.register(
+    r"environments",
+    access_control_views.EnvironmentViewSet,
+    basename="environment",
+)
+
 
 urlpatterns = [
     path("admin/", admin.site.urls),

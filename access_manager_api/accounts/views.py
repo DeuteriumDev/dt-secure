@@ -2,13 +2,7 @@ from common.strtobool import strtobool
 from common.filter_mappings import get_filter_mappings, arg_splitter
 
 # from common.mixins import PermissionViewMixin
-from .models import CustomGroup, Environment, Organization, CustomUser
-from .serializers import (
-    CustomGroupSerializer,
-    EnvironmentSerializer,
-    OrganizationSerializer,
-    CustomUserSerializer,
-)
+from accounts import models, serializers
 from rest_access_policy import AccessViewSetMixin
 from rest_framework import viewsets
 from rest_framework.response import Response
@@ -52,8 +46,8 @@ class CustomGroupViewSet(
     FiltersMixin,
     viewsets.ModelViewSet,
 ):
-    queryset = CustomGroup.objects.all()
-    serializer_class = CustomGroupSerializer
+    queryset = models.CustomGroup.objects.all()
+    serializer_class = serializers.CustomGroupSerializer
     access_policy = AccountsAccessPolicy
 
     filterset_fields = ["id", "name", "parent", "hidden", "created", "updated"]
@@ -67,7 +61,7 @@ class CustomGroupViewSet(
 
     def get_queryset(self):
         return self.access_policy.scope_queryset(
-            self.request, self.queryset, CustomGroup
+            self.request, self.queryset, models.CustomGroup
         )
 
     @extend_schema(
@@ -99,8 +93,8 @@ class CustomGroupViewSet(
 
 
 class OrganizationViewSet(AccessViewSetMixin, viewsets.ModelViewSet):
-    queryset = Organization.objects.all()
-    serializer_class = OrganizationSerializer
+    queryset = models.Organization.objects.all()
+    serializer_class = serializers.OrganizationSerializer
     access_policy = AccountsAccessPolicy
 
 
@@ -129,8 +123,8 @@ user_filters = get_filter_mappings(
     ],
 )
 class CustomUserViewSet(AccessViewSetMixin, FiltersMixin, viewsets.ModelViewSet):
-    queryset = CustomUser.objects.all()
-    serializer_class = CustomUserSerializer
+    queryset = models.CustomUser.objects.all()
+    serializer_class = serializers.CustomUserSerializer
     access_policy = AccountsUsersAccessPolicy
     filterset_fields = [
         "id",
@@ -152,15 +146,9 @@ class CustomUserViewSet(AccessViewSetMixin, FiltersMixin, viewsets.ModelViewSet)
         return self.access_policy.scope_queryset(
             self.request,
             self.queryset,
-            CustomGroup,
+            models.CustomGroup,
         )
 
     @action(detail=False, methods=["GET"])
     def me(self, request):
         return Response(self.get_serializer(request.user, many=False).data)
-
-
-class EnvironmentViewSet(AccessViewSetMixin, FiltersMixin, viewsets.ModelViewSet):
-    queryset = Environment.objects.all()
-    serializer_class = EnvironmentSerializer
-    access_policy = AccountsUsersAccessPolicy

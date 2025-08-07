@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
 from .forms import CustomUserCreationForm, CustomUserChangeForm
-from .models import CustomGroup, CustomUser, Environment, Organization
+from .models import CustomGroup, CustomUser, Organization
 from unfold.admin import ModelAdmin
 from django.urls import reverse
 from django.utils.safestring import mark_safe
@@ -106,7 +106,7 @@ class CustomGroupAdmin(ModelAdmin):
             for group in obj.children.all()
         ]
         if len(links) == 0:
-            return mark_safe('<p>No sub groups</p>')
+            return mark_safe("<p>No sub groups</p>")
         return mark_safe('<ul class="space-y-3">' + "".join(links) + "</ul>")
 
 
@@ -114,30 +114,6 @@ class OrganizationAdmin(ModelAdmin):
     pass
 
 
-class EnvironmentAdmin(ModelAdmin):
-    model = Environment
-    readonly_fields = ("token", "created", "updated", "auth_user")
-
-    fieldsets = [
-        (
-            None,
-            {
-                "fields": (
-                    "name",
-                    "created",
-                    "updated",
-                    "parent_org",
-                    "url",
-                    "pg_url",
-                    "auth_user",
-                    "token",
-                ),
-            },
-        ),
-    ]
-
-
 admin.site.register(CustomUser, CustomUserAdmin)
 admin.site.register(CustomGroup, CustomGroupAdmin)
 admin.site.register(Organization, OrganizationAdmin)
-admin.site.register(Environment, EnvironmentAdmin)

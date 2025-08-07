@@ -1,7 +1,12 @@
 import uuid
 from django.conf import settings
 from django.db import models
-from accounts.models import Environment
+from durin.models import AuthToken, Client
+from django.conf import settings
+from django.db import connection
+
+from accounts.models import CustomUser, CustomGroup, Organization
+from .fields import CustomURLField
 
 
 class ResourceUserGroup(models.Model):
@@ -26,6 +31,100 @@ class ResourceUserGroup(models.Model):
 
     class Meta:
         ordering = ["created"]
+
+
+class EnvironmentManager(models.Manager):
+    def create(self, **kwargs):
+        auth_user = CustomUser.objects.create(
+            email=f"{uuid.uuid4()}@{settings.HOST_NAME}",
+            is_staff=False,
+            is_alias=True,
+        )
+        auth_user.set_password(str(uuid.uuid4()))
+        auth_user.save()
+        client = Client.objects.create(name=kwargs.get("name"))
+        client.save()
+        token = AuthToken.objects.create(user=auth_user, client=client)
+        token.save()
+
+        default_ug = ResourceUserGroup.objects.create(name="default")
+        default_ug.save()
+
+        parent_org = kwargs.get("parent_org")
+        security_group = CustomGroup.objects.get_or_create(
+            name=f"{parent_org.name} environment users",
+            parent=parent_org.root,
+            hidden=True,
+        )[0]
+        auth_user.groups.add(security_group)
+        auth_user.save()
+
+        uname = auth_user.email.split("@")[0]
+        password = str(uuid.uuid4())
+        port = settings.DATABASES["default"]["PORT"]
+        schema = settings.DB_SCHEMA
+        name = settings.DB_NAME
+
+        with connection.cursor() as cursor:
+            cursor.execute(f"CREATE USER \"{uname}\" WITH PASSWORD '{password}';")
+            cursor.execute(
+                f'GRANT SELECT ON TABLE "{schema}"."{ResourcePermission._meta.db_table}" TO "{uname}";'
+            )
+
+        instance = super(EnvironmentManager, self).create(
+            **kwargs,
+            auth_user=auth_user,
+            url=settings.HOST_NAME,
+            pg_url=f"postgres://{uname}:{password}@{parent_org.host}:{port}/{name}?schema={schema}",
+            default_resource_group=default_ug,
+        )
+
+        return instance
+
+
+class Environment(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    name = models.CharField("name", blank=False, null=False)
+    created = models.DateTimeField(null=False, auto_now_add=True)
+    updated = models.DateTimeField(null=False, auto_now=True)
+    description = models.TextField(null=True, blank=True, default="")
+    parent_org = models.ForeignKey(
+        Organization,
+        null=False,
+        blank=False,
+        on_delete=models.CASCADE,
+    )
+
+    url = models.URLField(null=False)
+    pg_url = CustomURLField(null=False)
+    auth_user = models.OneToOneField(
+        CustomUser,
+        null=False,
+        on_delete=models.CASCADE,
+    )
+    default_resource_group = models.ForeignKey(
+        ResourceUserGroup,
+        null=False,
+        blank=False,
+        on_delete=models.CASCADE,
+    )
+
+    objects = EnvironmentManager()
+
+    class Meta:
+        ordering = ["created"]
+        unique_together = ["name", "parent_org"]
+
+    def __str__(self):
+        return f"{self.name}"
+
+    @property
+    def token(self):
+        return AuthToken.objects.get(user=self.auth_user).token
+
+    @property
+    def client(self):
+        return AuthToken.objects.get(user=self.auth_user).client
 
 
 class ResourceUser(models.Model):
@@ -69,13 +168,6 @@ class ResourceUserPermissions(models.Model):
         related_name="resources",
     )
     resource_id = models.CharField(null=False, blank=False)
-    environment = models.ForeignKey(
-        Environment,
-        null=True,
-        blank=False,
-        on_delete=models.CASCADE,
-        related_name="environment_resources",
-    )
 
     can_create = models.BooleanField(null=True)
     can_read = models.BooleanField(null=True)
@@ -83,7 +175,6 @@ class ResourceUserPermissions(models.Model):
     can_delete = models.BooleanField(null=True)
 
     class Meta:
-        db_table = settings.RESOURCE_USER_PERMISSIONS_TABLE
         indexes = [
             models.Index(fields=["user_id", "resource_id"]),
         ]

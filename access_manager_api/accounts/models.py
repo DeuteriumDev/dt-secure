@@ -4,12 +4,9 @@ from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.core.mail import send_mail
 from django.utils import timezone
 import uuid
-from accounts.managers import CustomUserManager
-from .fields import CustomURLField
-from durin.models import AuthToken, Client
-from django.conf import settings
-from django.db import connection
 from django.core.validators import DomainNameValidator
+
+from accounts.managers import CustomUserManager
 
 
 class CustomGroup(models.Model):
@@ -106,87 +103,3 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         Sends an email to this User.
         """
         send_mail(subject, message, from_email, [self.email], **kwargs)
-
-
-class EnvironmentManager(models.Manager):
-    def create(self, **kwargs):
-        auth_user = CustomUser.objects.create(
-            email=f"{uuid.uuid4()}@{settings.HOST_NAME}",
-            is_staff=False,
-            is_alias=True,
-        )
-        auth_user.set_password(str(uuid.uuid4()))
-        auth_user.save()
-        client = Client.objects.create(name=kwargs.get("name"))
-        client.save()
-        token = AuthToken.objects.create(user=auth_user, client=client)
-        token.save()
-
-        parent_org = kwargs.get("parent_org")
-        security_group = CustomGroup.objects.get_or_create(
-            name=f"{parent_org.name} environment users",
-            parent=parent_org.root,
-            hidden=True,
-        )[0]
-        auth_user.groups.add(security_group)
-        auth_user.save()
-
-        uname = auth_user.email.split("@")[0]
-        password = str(uuid.uuid4())
-        port = settings.DATABASES["default"]["PORT"]
-        schema = settings.DB_SCHEMA
-        name = settings.DB_NAME
-
-        with connection.cursor() as cursor:
-            cursor.execute(f"CREATE USER \"{uname}\" WITH PASSWORD '{password}';")
-            cursor.execute(
-                f'GRANT SELECT ON TABLE "{schema}"."{settings.RESOURCE_USER_PERMISSIONS_TABLE}" TO "{uname}";'
-            )
-
-        instance = super(EnvironmentManager, self).create(
-            **kwargs,
-            auth_user=auth_user,
-            url=settings.HOST_NAME,
-            pg_url=f"postgres://{uname}:{password}@{parent_org.host}:{port}/{name}?schema={schema}",
-        )
-
-        return instance
-
-
-class Environment(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    name = models.CharField("name", blank=False, null=False)
-    created = models.DateTimeField(null=False, auto_now_add=True)
-    updated = models.DateTimeField(null=False, auto_now=True)
-    description = models.TextField(null=True, blank=True, default="")
-    parent_org = models.ForeignKey(
-        Organization,
-        null=False,
-        blank=False,
-        on_delete=models.CASCADE,
-    )
-
-    url = models.URLField(null=False)
-    pg_url = CustomURLField(null=False)
-    auth_user = models.OneToOneField(
-        CustomUser,
-        null=False,
-        on_delete=models.CASCADE,
-    )
-
-    objects = EnvironmentManager()
-
-    class Meta:
-        ordering = ["created"]
-        unique_together = ["name", "parent_org"]
-
-    def __str__(self):
-        return f"{self.name}"
-
-    @property
-    def token(self):
-        return AuthToken.objects.get(user=self.auth_user).token
-
-    @property
-    def client(self):
-        return AuthToken.objects.get(user=self.auth_user).client

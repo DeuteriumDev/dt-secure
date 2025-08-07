@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.core.management.base import BaseCommand
-from accounts.models import Organization, CustomGroup, Environment, CustomUser
+from accounts.models import Organization, CustomGroup, CustomUser
+from access_control.models import Environment
 
 
 class Command(BaseCommand):
@@ -13,7 +14,7 @@ class Command(BaseCommand):
         org = Organization.objects.create(
             name="Default Org",
             root=group,
-            host=settings.HOST_NAME, # default hostname
+            host=settings.HOST_NAME,  # default hostname
         )
         org.save()
 
