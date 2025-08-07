@@ -46,9 +46,33 @@ router.register(
     basename="environment",
 )
 
+
+resource_router = DefaultRouter()
+resource_router.register(
+    r"resources",
+    access_control_views.ResourceUserPermissionViewSet,
+    basename="resource",
+)
+
+resource_router.register(
+    r"permissions",
+    access_control_views.ResourcePermissionViewSet,
+    basename="permission",
+)
+resource_router.register(
+    r"users",
+    access_control_views.ResourceUserViewSet,
+    basename="user",
+)
+resource_router.register(
+    r"groups",
+    access_control_views.ResourceUserGroupViewSet,
+    basename="group",
+)
+
 urlpatterns = [
     path("admin/", admin.site.urls),
     re_path(r"api/v1/auth/", include("durin.urls")),
     re_path(r"api/v1/", include(router.urls)),
-    path("api/v1/resources/", access_control_views.ResourcesView.as_view()),
+    re_path(r"api/v1/access-control/", include(resource_router.urls)),
 ]

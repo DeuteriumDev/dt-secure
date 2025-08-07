@@ -12,9 +12,6 @@ from django.db import connection
 from django.core.validators import DomainNameValidator
 
 
-from access_control.models import UserResourcePermission, ResourcePermission
-
-
 class CustomGroup(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField("name", blank=False, null=False)
@@ -29,9 +26,6 @@ class CustomGroup(models.Model):
         default=None,
     )
     hidden = models.BooleanField(default=False, null=False)
-    permission = models.OneToOneField(
-        ResourcePermission, null=True, on_delete=models.SET_NULL, related_name="group"
-    )
 
     created = models.DateTimeField(null=False, auto_now_add=True)
     updated = models.DateTimeField(null=False, auto_now=True)
@@ -128,9 +122,17 @@ class EnvironmentManager(models.Manager):
         token = AuthToken.objects.create(user=auth_user, client=client)
         token.save()
 
+        parent_org = kwargs.get("parent_org")
+        security_group = CustomGroup.objects.get_or_create(
+            name=f"{parent_org.name} environment users",
+            parent=parent_org.root,
+            hidden=True,
+        )[0]
+        auth_user.groups.add(security_group)
+        auth_user.save()
+
         uname = auth_user.email.split("@")[0]
         password = str(uuid.uuid4())
-        host = kwargs.get("parent_org").host
         port = settings.DATABASES["default"]["PORT"]
         schema = settings.DB_SCHEMA
         name = settings.DB_NAME
@@ -138,14 +140,14 @@ class EnvironmentManager(models.Manager):
         with connection.cursor() as cursor:
             cursor.execute(f"CREATE USER \"{uname}\" WITH PASSWORD '{password}';")
             cursor.execute(
-                f'GRANT SELECT ON TABLE "{schema}"."{UserResourcePermission._meta.db_table}" TO "{uname}";'
+                f'GRANT SELECT ON TABLE "{schema}"."{settings.RESOURCE_USER_PERMISSIONS_TABLE}" TO "{uname}";'
             )
 
         instance = super(EnvironmentManager, self).create(
             **kwargs,
             auth_user=auth_user,
             url=settings.HOST_NAME,
-            pg_url=f"postgres://{uname}:{password}@{host}:{port}/{name}?schema={schema}",
+            pg_url=f"postgres://{uname}:{password}@{parent_org.host}:{port}/{name}?schema={schema}",
         )
 
         return instance

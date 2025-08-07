@@ -200,3 +200,22 @@ AUTHENTICATION_BACKENDS = (
 )
 
 AUTH_USER_MODEL = "accounts.CustomUser"
+
+RESOURCE_USER_PERMISSIONS_TABLE = "accounts_resourceuserpermission"
+
+
+# LOGGING = {
+#     "handlers": {
+#         "console": {
+#             "level": "DEBUG",
+#             "class": "logging.StreamHandler",
+#         },
+#     },
+#     "loggers": {
+#         "werkzeug": {
+#             "handlers": ["console"],
+#             "level": "DEBUG",
+#             "propagate": True,
+#         },
+#     },
+# }

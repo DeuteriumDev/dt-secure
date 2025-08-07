@@ -1,15 +1,81 @@
 import uuid
+from django.conf import settings
 from django.db import models
+from accounts.models import Environment
 
 
-class UserResourcePermission(models.Model):
+class ResourceUserGroup(models.Model):
+    id = models.UUIDField(
+        primary_key=True,
+        default=uuid.uuid4,
+        editable=False,
+    )
+    name = models.CharField("name", blank=False, null=False)
+    description = models.TextField(null=True, blank=True, default="")
+
+    parent = models.ForeignKey(
+        "self",
+        on_delete=models.SET_NULL,
+        related_name="children",
+        null=True,
+        blank=True,
+        default=None,
+    )
+    created = models.DateTimeField(null=False, auto_now_add=True)
+    updated = models.DateTimeField(null=False, auto_now=True)
+
+    class Meta:
+        ordering = ["created"]
+
+
+class ResourceUser(models.Model):
     id = models.UUIDField(
         primary_key=True,
         default=uuid.uuid4,
         editable=False,
     )
     user_id = models.CharField(null=False, blank=False)
+    created = models.DateTimeField(null=False, auto_now_add=True)
+    groups = models.ManyToManyField(
+        ResourceUserGroup,
+        blank=False,
+        related_name="members",
+    )
+
+    environment = models.ForeignKey(
+        Environment,
+        null=True,
+        blank=False,
+        on_delete=models.CASCADE,
+        related_name="environment_users",
+    )
+
+    class Meta:
+        ordering = ["created"]
+        unique_together = ["user_id", "environment"]
+
+
+class ResourceUserPermissions(models.Model):
+    id = models.UUIDField(
+        primary_key=True,
+        default=uuid.uuid4,
+        editable=False,
+    )
+    user_id = models.ForeignKey(
+        ResourceUser,
+        null=True,
+        blank=False,
+        on_delete=models.SET_NULL,
+        related_name="resources",
+    )
     resource_id = models.CharField(null=False, blank=False)
+    environment = models.ForeignKey(
+        Environment,
+        null=True,
+        blank=False,
+        on_delete=models.CASCADE,
+        related_name="environment_resources",
+    )
 
     can_create = models.BooleanField(null=True)
     can_read = models.BooleanField(null=True)
@@ -17,6 +83,7 @@ class UserResourcePermission(models.Model):
     can_delete = models.BooleanField(null=True)
 
     class Meta:
+        db_table = settings.RESOURCE_USER_PERMISSIONS_TABLE
         indexes = [
             models.Index(fields=["user_id", "resource_id"]),
         ]
@@ -28,7 +95,7 @@ class ResourcePermissionManager(models.Manager):
             **kwargs,
         )
 
-        UserResourcePermission(
+        ResourceUserPermissions(
             permission=instance,
             can_create=instance.can_create,
             can_read=instance.can_read,
@@ -62,13 +129,19 @@ class ResourcePermission(models.Model):
     can_update = models.BooleanField(null=True)
     can_delete = models.BooleanField(null=True)
     user_resource = models.OneToOneField(
-        UserResourcePermission,
+        ResourceUserPermissions,
         null=False,
         on_delete=models.CASCADE,
         related_name="permission",
     )
 
-    ## group = relational field to [CustomGroup](../accounts/models.py) model
+    group = models.ForeignKey(
+        ResourceUserGroup,
+        null=True,
+        on_delete=models.SET_NULL,
+        related_name="permissions",
+    )
+
     objects = ResourcePermissionManager()
 
     class Meta:
