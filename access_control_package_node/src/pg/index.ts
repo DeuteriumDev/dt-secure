@@ -15,7 +15,7 @@ async function withAC<T>(client: Client, user: string): Promise<Client>;
 async function withAC<T>(
   client: Client,
   user: string,
-  callback?: (qx: Client) => Promise<T>
+  callback: (qx: Client) => Promise<T>
 ): Promise<T>;
 async function withAC<T>(
   client: Client,

@@ -26,3 +26,7 @@ clean: $(wildcard ./dist)
 build: clean ## build the lib
 	@yarn build
 .PHONY: build
+
+codegen: ## build codegen from [access_manager_api schema.yml](../access_manager_api/schema.yml)
+	@npx @hey-api/openapi-ts
+.PHONY: codegen

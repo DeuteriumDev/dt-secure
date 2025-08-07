@@ -1,4 +1,4 @@
-interface DtConfig {
+export interface DtConfig {
   dt_api_key: string;
   dt_url: string;
   pg_url: string;

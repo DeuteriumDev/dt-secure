@@ -10,6 +10,7 @@
   },
   "license": "MIT",
   "devDependencies": {
+    "@hey-api/openapi-ts": "^0.80.1",
     "@types/node": "^24.1.0",
     "@types/pg": "^8",
     "drizzle-orm": "^0.44.4",
@@ -20,7 +21,9 @@
   },
   "packageManager": "yarn@4.9.2",
   "dependencies": {
-    "yaml": "^2.8.0"
+    "@hey-api/client-fetch": "^0.13.1",
+    "yaml": "^2.8.0",
+    "zod": "^4.0.14"
   },
   "peerDependencies": {
     "drizzle-orm": ">=0.44.0",
