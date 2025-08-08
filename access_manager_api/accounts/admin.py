@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
 from .forms import CustomUserCreationForm, CustomUserChangeForm
-from .models import CustomGroup, CustomUser, Organization
+from accounts import models
 from unfold.admin import ModelAdmin
 from django.urls import reverse
 from django.utils.safestring import mark_safe
@@ -11,7 +11,7 @@ from django.utils.safestring import mark_safe
 class CustomUserAdmin(UserAdmin):
     add_form = CustomUserCreationForm
     form = CustomUserChangeForm
-    model = CustomUser
+    model = models.CustomUser
     list_display = ("email", "first_name", "last_name", "is_staff")
     add_fieldsets = (
         (
@@ -64,7 +64,7 @@ class CustomUserAdmin(UserAdmin):
 
 
 class CustomGroupAdmin(ModelAdmin):
-    model = CustomGroup
+    model = models.CustomGroup
     readonly_fields = (
         "created",
         "updated",
@@ -114,6 +114,6 @@ class OrganizationAdmin(ModelAdmin):
     pass
 
 
-admin.site.register(CustomUser, CustomUserAdmin)
-admin.site.register(CustomGroup, CustomGroupAdmin)
-admin.site.register(Organization, OrganizationAdmin)
+admin.site.register(models.CustomUser, CustomUserAdmin)
+admin.site.register(models.CustomGroup, CustomGroupAdmin)
+admin.site.register(models.Organization, OrganizationAdmin)

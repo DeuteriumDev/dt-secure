@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Organization, CustomUser, CustomGroup
+from accounts import models
 from drf_spectacular.utils import extend_schema_field
 from drf_spectacular.types import OpenApiTypes
 
@@ -12,7 +12,7 @@ class CustomUserGroupSerializer(serializers.Serializer):
 
 class OrganizationSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Organization
+        model = models.Organization
         fields = "__all__"
         depth = 1
 
@@ -22,7 +22,7 @@ class CustomUserSerializer(serializers.ModelSerializer):
     date_joined = serializers.DateTimeField(read_only=True)
 
     class Meta:
-        model = CustomUser
+        model = models.CustomUser
         fields = [
             "id",
             "email",
@@ -49,7 +49,7 @@ class CustomGroupSerializer(serializers.ModelSerializer):
     members = CustomMembersSerializer(many=True, read_only=True)
 
     class Meta:
-        model = CustomGroup
+        model = models.CustomGroup
         fields = "__all__"
 
     @extend_schema_field(OpenApiTypes.INT)
