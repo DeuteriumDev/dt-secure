@@ -3,6 +3,670 @@ info:
   title: ""
   version: 0.0.0
 paths:
+  /api/v1/access-control/environments/:
+    get:
+      operationId: access_control_environments_list
+      parameters:
+        - name: ordering
+          required: false
+          in: query
+          description: Which field to use when ordering the results.
+          schema:
+            type: string
+        - name: page
+          required: false
+          in: query
+          description: A page number within the paginated result set.
+          schema:
+            type: integer
+        - name: size
+          required: false
+          in: query
+          description: Number of results to return per page.
+          schema:
+            type: integer
+      tags:
+        - access-control
+      security:
+        - TokenAuth: []
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaginatedEnvironmentList"
+          description: ""
+    post:
+      operationId: access_control_environments_create
+      tags:
+        - access-control
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Environment"
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: "#/components/schemas/Environment"
+          multipart/form-data:
+            schema:
+              $ref: "#/components/schemas/Environment"
+        required: true
+      security:
+        - TokenAuth: []
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Environment"
+          description: ""
+  /api/v1/access-control/environments/{id}/:
+    get:
+      operationId: access_control_environments_retrieve
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+            format: uuid
+          description: A UUID string identifying this environment.
+          required: true
+      tags:
+        - access-control
+      security:
+        - TokenAuth: []
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Environment"
+          description: ""
+    put:
+      operationId: access_control_environments_update
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+            format: uuid
+          description: A UUID string identifying this environment.
+          required: true
+      tags:
+        - access-control
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Environment"
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: "#/components/schemas/Environment"
+          multipart/form-data:
+            schema:
+              $ref: "#/components/schemas/Environment"
+        required: true
+      security:
+        - TokenAuth: []
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Environment"
+          description: ""
+    patch:
+      operationId: access_control_environments_partial_update
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+            format: uuid
+          description: A UUID string identifying this environment.
+          required: true
+      tags:
+        - access-control
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PatchedEnvironment"
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: "#/components/schemas/PatchedEnvironment"
+          multipart/form-data:
+            schema:
+              $ref: "#/components/schemas/PatchedEnvironment"
+      security:
+        - TokenAuth: []
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Environment"
+          description: ""
+    delete:
+      operationId: access_control_environments_destroy
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+            format: uuid
+          description: A UUID string identifying this environment.
+          required: true
+      tags:
+        - access-control
+      security:
+        - TokenAuth: []
+      responses:
+        "204":
+          description: No response body
+  /api/v1/access-control/groups/:
+    get:
+      operationId: access_control_groups_list
+      parameters:
+        - name: ordering
+          required: false
+          in: query
+          description: Which field to use when ordering the results.
+          schema:
+            type: string
+        - name: page
+          required: false
+          in: query
+          description: A page number within the paginated result set.
+          schema:
+            type: integer
+        - name: size
+          required: false
+          in: query
+          description: Number of results to return per page.
+          schema:
+            type: integer
+      tags:
+        - access-control
+      security:
+        - TokenAuth: []
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaginatedResourceUserGroupList"
+          description: ""
+    post:
+      operationId: access_control_groups_create
+      tags:
+        - access-control
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ResourceUserGroup"
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: "#/components/schemas/ResourceUserGroup"
+          multipart/form-data:
+            schema:
+              $ref: "#/components/schemas/ResourceUserGroup"
+        required: true
+      security:
+        - TokenAuth: []
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ResourceUserGroup"
+          description: ""
+  /api/v1/access-control/groups/{id}/:
+    get:
+      operationId: access_control_groups_retrieve
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+            format: uuid
+          description: A UUID string identifying this resource user group.
+          required: true
+      tags:
+        - access-control
+      security:
+        - TokenAuth: []
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ResourceUserGroup"
+          description: ""
+    put:
+      operationId: access_control_groups_update
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+            format: uuid
+          description: A UUID string identifying this resource user group.
+          required: true
+      tags:
+        - access-control
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ResourceUserGroup"
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: "#/components/schemas/ResourceUserGroup"
+          multipart/form-data:
+            schema:
+              $ref: "#/components/schemas/ResourceUserGroup"
+        required: true
+      security:
+        - TokenAuth: []
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ResourceUserGroup"
+          description: ""
+    patch:
+      operationId: access_control_groups_partial_update
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+            format: uuid
+          description: A UUID string identifying this resource user group.
+          required: true
+      tags:
+        - access-control
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PatchedResourceUserGroup"
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: "#/components/schemas/PatchedResourceUserGroup"
+          multipart/form-data:
+            schema:
+              $ref: "#/components/schemas/PatchedResourceUserGroup"
+      security:
+        - TokenAuth: []
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ResourceUserGroup"
+          description: ""
+    delete:
+      operationId: access_control_groups_destroy
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+            format: uuid
+          description: A UUID string identifying this resource user group.
+          required: true
+      tags:
+        - access-control
+      security:
+        - TokenAuth: []
+      responses:
+        "204":
+          description: No response body
+  /api/v1/access-control/permissions/:
+    get:
+      operationId: access_control_permissions_list
+      parameters:
+        - name: ordering
+          required: false
+          in: query
+          description: Which field to use when ordering the results.
+          schema:
+            type: string
+        - name: page
+          required: false
+          in: query
+          description: A page number within the paginated result set.
+          schema:
+            type: integer
+        - name: size
+          required: false
+          in: query
+          description: Number of results to return per page.
+          schema:
+            type: integer
+      tags:
+        - access-control
+      security:
+        - TokenAuth: []
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaginatedResourcePermissionList"
+          description: ""
+    post:
+      operationId: access_control_permissions_create
+      tags:
+        - access-control
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ResourcePermission"
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: "#/components/schemas/ResourcePermission"
+          multipart/form-data:
+            schema:
+              $ref: "#/components/schemas/ResourcePermission"
+        required: true
+      security:
+        - TokenAuth: []
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ResourcePermission"
+          description: ""
+  /api/v1/access-control/permissions/{id}/:
+    get:
+      operationId: access_control_permissions_retrieve
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+            format: uuid
+          description: A UUID string identifying this resource permission.
+          required: true
+      tags:
+        - access-control
+      security:
+        - TokenAuth: []
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ResourcePermission"
+          description: ""
+    put:
+      operationId: access_control_permissions_update
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+            format: uuid
+          description: A UUID string identifying this resource permission.
+          required: true
+      tags:
+        - access-control
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ResourcePermission"
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: "#/components/schemas/ResourcePermission"
+          multipart/form-data:
+            schema:
+              $ref: "#/components/schemas/ResourcePermission"
+        required: true
+      security:
+        - TokenAuth: []
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ResourcePermission"
+          description: ""
+    patch:
+      operationId: access_control_permissions_partial_update
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+            format: uuid
+          description: A UUID string identifying this resource permission.
+          required: true
+      tags:
+        - access-control
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PatchedResourcePermission"
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: "#/components/schemas/PatchedResourcePermission"
+          multipart/form-data:
+            schema:
+              $ref: "#/components/schemas/PatchedResourcePermission"
+      security:
+        - TokenAuth: []
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ResourcePermission"
+          description: ""
+    delete:
+      operationId: access_control_permissions_destroy
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+            format: uuid
+          description: A UUID string identifying this resource permission.
+          required: true
+      tags:
+        - access-control
+      security:
+        - TokenAuth: []
+      responses:
+        "204":
+          description: No response body
+  /api/v1/access-control/resources/:
+    get:
+      operationId: access_control_resources_list
+      parameters:
+        - name: ordering
+          required: false
+          in: query
+          description: Which field to use when ordering the results.
+          schema:
+            type: string
+        - name: page
+          required: false
+          in: query
+          description: A page number within the paginated result set.
+          schema:
+            type: integer
+        - name: size
+          required: false
+          in: query
+          description: Number of results to return per page.
+          schema:
+            type: integer
+      tags:
+        - access-control
+      security:
+        - TokenAuth: []
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaginatedResourceUserPermissionList"
+          description: ""
+  /api/v1/access-control/resources/{id}/:
+    get:
+      operationId: access_control_resources_retrieve
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+            format: uuid
+          description: A UUID string identifying this resource user permission.
+          required: true
+      tags:
+        - access-control
+      security:
+        - TokenAuth: []
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ResourceUserPermission"
+          description: ""
+  /api/v1/access-control/users/:
+    get:
+      operationId: access_control_users_list
+      parameters:
+        - name: ordering
+          required: false
+          in: query
+          description: Which field to use when ordering the results.
+          schema:
+            type: string
+        - name: page
+          required: false
+          in: query
+          description: A page number within the paginated result set.
+          schema:
+            type: integer
+        - name: size
+          required: false
+          in: query
+          description: Number of results to return per page.
+          schema:
+            type: integer
+      tags:
+        - access-control
+      security:
+        - TokenAuth: []
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaginatedResourceUserList"
+          description: ""
+    post:
+      operationId: access_control_users_create
+      tags:
+        - access-control
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ResourceUser"
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: "#/components/schemas/ResourceUser"
+          multipart/form-data:
+            schema:
+              $ref: "#/components/schemas/ResourceUser"
+        required: true
+      security:
+        - TokenAuth: []
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ResourceUser"
+          description: ""
+  /api/v1/access-control/users/{id}/:
+    get:
+      operationId: access_control_users_retrieve
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+            format: uuid
+          description: A UUID string identifying this resource user.
+          required: true
+      tags:
+        - access-control
+      security:
+        - TokenAuth: []
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ResourceUser"
+          description: ""
+    delete:
+      operationId: access_control_users_destroy
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+            format: uuid
+          description: A UUID string identifying this resource user.
+          required: true
+      tags:
+        - access-control
+      security:
+        - TokenAuth: []
+      responses:
+        "204":
+          description: No response body
+  /api/v1/access-control/users/with_group/:
+    post:
+      operationId: access_control_users_with_group_create
+      tags:
+        - access-control
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ResourceUser"
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: "#/components/schemas/ResourceUser"
+          multipart/form-data:
+            schema:
+              $ref: "#/components/schemas/ResourceUser"
+        required: true
+      security:
+        - TokenAuth: []
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ResourceUser"
+          description: ""
   /api/v1/auth/apiaccess/:
     get:
       operationId: auth_apiaccess_retrieve
@@ -16,6 +680,8 @@ paths:
         .. versionadded:: 1.0.0
       tags:
         - auth
+      security:
+        - TokenAuth: []
       responses:
         "200":
           description: No response body
@@ -31,6 +697,8 @@ paths:
         .. versionadded:: 1.0.0
       tags:
         - auth
+      security:
+        - TokenAuth: []
       responses:
         "200":
           description: No response body
@@ -46,6 +714,8 @@ paths:
         .. versionadded:: 1.0.0
       tags:
         - auth
+      security:
+        - TokenAuth: []
       responses:
         "204":
           description: No response body
@@ -67,6 +737,8 @@ paths:
         helper methods:
       tags:
         - auth
+      security:
+        - TokenAuth: []
       responses:
         "200":
           description: No response body
@@ -87,6 +759,8 @@ paths:
         :returns: 204 (No content)
       tags:
         - auth
+      security:
+        - TokenAuth: []
       responses:
         "200":
           description: No response body
@@ -109,6 +783,8 @@ paths:
         :returns: 204 (No content)
       tags:
         - auth
+      security:
+        - TokenAuth: []
       responses:
         "200":
           description: No response body
@@ -129,6 +805,8 @@ paths:
         2. :meth:`durin.signals.token_renewed` is called.
       tags:
         - auth
+      security:
+        - TokenAuth: []
       responses:
         "200":
           description: No response body
@@ -151,6 +829,8 @@ paths:
             type: string
       tags:
         - auth
+      security:
+        - TokenAuth: []
       responses:
         "200":
           content:
@@ -179,6 +859,8 @@ paths:
           required: true
       tags:
         - auth
+      security:
+        - TokenAuth: []
       responses:
         "204":
           description: No response body
@@ -290,6 +972,8 @@ paths:
             type: string
       tags:
         - groups
+      security:
+        - TokenAuth: []
       responses:
         "200":
           content:
@@ -370,6 +1054,8 @@ paths:
             schema:
               $ref: "#/components/schemas/CustomGroup"
         required: true
+      security:
+        - TokenAuth: []
       responses:
         "201":
           content:
@@ -446,6 +1132,8 @@ paths:
             type: string
       tags:
         - groups
+      security:
+        - TokenAuth: []
       responses:
         "200":
           content:
@@ -533,6 +1221,8 @@ paths:
             schema:
               $ref: "#/components/schemas/CustomGroup"
         required: true
+      security:
+        - TokenAuth: []
       responses:
         "200":
           content:
@@ -619,6 +1309,8 @@ paths:
           multipart/form-data:
             schema:
               $ref: "#/components/schemas/PatchedCustomGroup"
+      security:
+        - TokenAuth: []
       responses:
         "200":
           content:
@@ -694,6 +1386,8 @@ paths:
             type: string
       tags:
         - groups
+      security:
+        - TokenAuth: []
       responses:
         "204":
           description: No response body
@@ -777,6 +1471,8 @@ paths:
                   items:
                     type: string
                     format: uuid
+      security:
+        - TokenAuth: []
       responses:
         "200":
           content:
@@ -810,6 +1506,8 @@ paths:
             type: integer
       tags:
         - organizations
+      security:
+        - TokenAuth: []
       responses:
         "200":
           content:
@@ -833,6 +1531,8 @@ paths:
             schema:
               $ref: "#/components/schemas/Organization"
         required: true
+      security:
+        - TokenAuth: []
       responses:
         "201":
           content:
@@ -853,6 +1553,8 @@ paths:
           required: true
       tags:
         - organizations
+      security:
+        - TokenAuth: []
       responses:
         "200":
           content:
@@ -884,6 +1586,8 @@ paths:
             schema:
               $ref: "#/components/schemas/Organization"
         required: true
+      security:
+        - TokenAuth: []
       responses:
         "200":
           content:
@@ -914,6 +1618,8 @@ paths:
           multipart/form-data:
             schema:
               $ref: "#/components/schemas/PatchedOrganization"
+      security:
+        - TokenAuth: []
       responses:
         "200":
           content:
@@ -933,6 +1639,8 @@ paths:
           required: true
       tags:
         - organizations
+      security:
+        - TokenAuth: []
       responses:
         "204":
           description: No response body
@@ -1025,6 +1733,8 @@ paths:
             type: integer
       tags:
         - users
+      security:
+        - TokenAuth: []
       responses:
         "200":
           content:
@@ -1097,6 +1807,8 @@ paths:
             schema:
               $ref: "#/components/schemas/CustomUser"
         required: true
+      security:
+        - TokenAuth: []
       responses:
         "201":
           content:
@@ -1165,6 +1877,8 @@ paths:
             type: string
       tags:
         - users
+      security:
+        - TokenAuth: []
       responses:
         "200":
           content:
@@ -1244,6 +1958,8 @@ paths:
             schema:
               $ref: "#/components/schemas/CustomUser"
         required: true
+      security:
+        - TokenAuth: []
       responses:
         "200":
           content:
@@ -1322,6 +2038,8 @@ paths:
           multipart/form-data:
             schema:
               $ref: "#/components/schemas/PatchedCustomUser"
+      security:
+        - TokenAuth: []
       responses:
         "200":
           content:
@@ -1389,6 +2107,8 @@ paths:
             type: string
       tags:
         - users
+      security:
+        - TokenAuth: []
       responses:
         "204":
           description: No response body
@@ -1446,6 +2166,8 @@ paths:
             type: string
       tags:
         - users
+      security:
+        - TokenAuth: []
       responses:
         "200":
           content:
@@ -1472,6 +2194,11 @@ components:
           readOnly: true
         name:
           type: string
+        description:
+          type: string
+          nullable: true
+        hidden:
+          type: boolean
         created:
           type: string
           format: date-time
@@ -1480,11 +2207,6 @@ components:
           type: string
           format: date-time
           readOnly: true
-        description:
-          type: string
-          nullable: true
-        hidden:
-          type: boolean
         parent:
           type: string
           format: uuid
@@ -1579,7 +2301,7 @@ components:
       required:
         - id
         - name
-    Nested:
+    Environment:
       type: object
       properties:
         id:
@@ -1599,8 +2321,54 @@ components:
         description:
           type: string
           nullable: true
+        url:
+          type: string
+          format: uri
+          maxLength: 200
+        pg_url:
+          type: string
+          format: uri
+        parent_org:
+          type: string
+          format: uuid
+        auth_user:
+          type: string
+          format: uuid
+        default_resource_group:
+          type: string
+          format: uuid
+          nullable: true
+      required:
+        - auth_user
+        - created
+        - id
+        - name
+        - parent_org
+        - pg_url
+        - updated
+        - url
+    Nested:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+        description:
+          type: string
+          nullable: true
         hidden:
           type: boolean
+        created:
+          type: string
+          format: date-time
+          readOnly: true
+        updated:
+          type: string
+          format: date-time
+          readOnly: true
         parent:
           type: string
           format: uuid
@@ -1623,14 +2391,28 @@ components:
           type: string
           format: uri
           nullable: true
+        host:
+          type: string
+          pattern: ^[a-z\u00a1-\uffff0-9](?:[a-z\u00a1-\uffff0-9-]{0,61}[a-z\u00a1-\uffff0-9])?(?:\.(?!-)[a-z\u00a1-\uffff0-9-]{1,63}(?<!-))*\.(?!-)(?:[a-z\u00a1-\uffff-]{2,63}|xn--[a-z0-9]{1,59})(?<!-)\.?$
+        created:
+          type: string
+          format: date-time
+          readOnly: true
+        updated:
+          type: string
+          format: date-time
+          readOnly: true
         root:
           allOf:
             - $ref: "#/components/schemas/Nested"
           readOnly: true
       required:
+        - created
+        - host
         - id
         - name
         - root
+        - updated
     PaginatedCustomGroupList:
       type: object
       required:
@@ -1673,6 +2455,27 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/CustomUser"
+    PaginatedEnvironmentList:
+      type: object
+      required:
+        - count
+        - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: integer
+          nullable: true
+          example: 2
+        previous:
+          type: integer
+          nullable: true
+          example: 1
+        results:
+          type: array
+          items:
+            $ref: "#/components/schemas/Environment"
     PaginatedOrganizationList:
       type: object
       required:
@@ -1694,6 +2497,90 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Organization"
+    PaginatedResourcePermissionList:
+      type: object
+      required:
+        - count
+        - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: integer
+          nullable: true
+          example: 2
+        previous:
+          type: integer
+          nullable: true
+          example: 1
+        results:
+          type: array
+          items:
+            $ref: "#/components/schemas/ResourcePermission"
+    PaginatedResourceUserGroupList:
+      type: object
+      required:
+        - count
+        - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: integer
+          nullable: true
+          example: 2
+        previous:
+          type: integer
+          nullable: true
+          example: 1
+        results:
+          type: array
+          items:
+            $ref: "#/components/schemas/ResourceUserGroup"
+    PaginatedResourceUserList:
+      type: object
+      required:
+        - count
+        - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: integer
+          nullable: true
+          example: 2
+        previous:
+          type: integer
+          nullable: true
+          example: 1
+        results:
+          type: array
+          items:
+            $ref: "#/components/schemas/ResourceUser"
+    PaginatedResourceUserPermissionList:
+      type: object
+      required:
+        - count
+        - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: integer
+          nullable: true
+          example: 2
+        previous:
+          type: integer
+          nullable: true
+          example: 1
+        results:
+          type: array
+          items:
+            $ref: "#/components/schemas/ResourceUserPermission"
     PatchedCustomGroup:
       type: object
       properties:
@@ -1711,6 +2598,11 @@ components:
           readOnly: true
         name:
           type: string
+        description:
+          type: string
+          nullable: true
+        hidden:
+          type: boolean
         created:
           type: string
           format: date-time
@@ -1719,11 +2611,6 @@ components:
           type: string
           format: date-time
           readOnly: true
-        description:
-          type: string
-          nullable: true
-        hidden:
-          type: boolean
         parent:
           type: string
           format: uuid
@@ -1762,6 +2649,43 @@ components:
           type: string
           format: date-time
           readOnly: true
+    PatchedEnvironment:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+        created:
+          type: string
+          format: date-time
+          readOnly: true
+        updated:
+          type: string
+          format: date-time
+          readOnly: true
+        description:
+          type: string
+          nullable: true
+        url:
+          type: string
+          format: uri
+          maxLength: 200
+        pg_url:
+          type: string
+          format: uri
+        parent_org:
+          type: string
+          format: uuid
+        auth_user:
+          type: string
+          format: uuid
+        default_resource_group:
+          type: string
+          format: uuid
+          nullable: true
     PatchedOrganization:
       type: object
       properties:
@@ -1775,10 +2699,226 @@ components:
           type: string
           format: uri
           nullable: true
+        host:
+          type: string
+          pattern: ^[a-z\u00a1-\uffff0-9](?:[a-z\u00a1-\uffff0-9-]{0,61}[a-z\u00a1-\uffff0-9])?(?:\.(?!-)[a-z\u00a1-\uffff0-9-]{1,63}(?<!-))*\.(?!-)(?:[a-z\u00a1-\uffff-]{2,63}|xn--[a-z0-9]{1,59})(?<!-)\.?$
+        created:
+          type: string
+          format: date-time
+          readOnly: true
+        updated:
+          type: string
+          format: date-time
+          readOnly: true
         root:
           allOf:
             - $ref: "#/components/schemas/Nested"
           readOnly: true
+    PatchedResourcePermission:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        resource_id:
+          type: string
+        inherit_from_parent:
+          type: boolean
+        created:
+          type: string
+          format: date-time
+          readOnly: true
+        updated:
+          type: string
+          format: date-time
+          readOnly: true
+        can_create:
+          type: boolean
+          nullable: true
+        can_read:
+          type: boolean
+          nullable: true
+        can_update:
+          type: boolean
+          nullable: true
+        can_delete:
+          type: boolean
+          nullable: true
+        children_permissions:
+          type: string
+          format: uuid
+          nullable: true
+        user_resource:
+          type: string
+          format: uuid
+        group:
+          type: string
+          format: uuid
+          nullable: true
+    PatchedResourceUserGroup:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        environment:
+          type: string
+          readOnly: true
+        name:
+          type: string
+        description:
+          type: string
+          nullable: true
+        created:
+          type: string
+          format: date-time
+          readOnly: true
+        updated:
+          type: string
+          format: date-time
+          readOnly: true
+        parent:
+          type: string
+          format: uuid
+          nullable: true
+    ResourcePermission:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        resource_id:
+          type: string
+        inherit_from_parent:
+          type: boolean
+        created:
+          type: string
+          format: date-time
+          readOnly: true
+        updated:
+          type: string
+          format: date-time
+          readOnly: true
+        can_create:
+          type: boolean
+          nullable: true
+        can_read:
+          type: boolean
+          nullable: true
+        can_update:
+          type: boolean
+          nullable: true
+        can_delete:
+          type: boolean
+          nullable: true
+        children_permissions:
+          type: string
+          format: uuid
+          nullable: true
+        user_resource:
+          type: string
+          format: uuid
+        group:
+          type: string
+          format: uuid
+          nullable: true
+      required:
+        - created
+        - id
+        - resource_id
+        - updated
+        - user_resource
+    ResourceUser:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        user_id:
+          type: string
+        created:
+          type: string
+          format: date-time
+          readOnly: true
+        groups:
+          type: array
+          items:
+            $ref: "#/components/schemas/ResourceUserGroup"
+          readOnly: true
+        environment:
+          type: string
+          readOnly: true
+      required:
+        - created
+        - environment
+        - groups
+        - id
+        - user_id
+    ResourceUserGroup:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        environment:
+          type: string
+          readOnly: true
+        name:
+          type: string
+        description:
+          type: string
+          nullable: true
+        created:
+          type: string
+          format: date-time
+          readOnly: true
+        updated:
+          type: string
+          format: date-time
+          readOnly: true
+        parent:
+          type: string
+          format: uuid
+          nullable: true
+      required:
+        - created
+        - environment
+        - id
+        - name
+        - updated
+    ResourceUserPermission:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        resource_id:
+          type: string
+        can_create:
+          type: boolean
+          nullable: true
+        can_read:
+          type: boolean
+          nullable: true
+        can_update:
+          type: boolean
+          nullable: true
+        can_delete:
+          type: boolean
+          nullable: true
+        user_id:
+          type: string
+          format: uuid
+          nullable: true
+      required:
+        - id
+        - resource_id
     TokenSessions:
       type: object
       description: |-
@@ -1820,3 +2960,8 @@ components:
         - has_expired
         - id
         - is_current
+  securitySchemes:
+    TokenAuth:
+      type: apiKey
+      in: header
+      name: Authentication

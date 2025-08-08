@@ -219,3 +219,17 @@ RESOURCE_USER_PERMISSIONS_TABLE = "accounts_resourceuserpermission"
 #         },
 #     },
 # }
+
+
+SPECTACULAR_SETTINGS = {
+    "APPEND_COMPONENTS": {
+        "securitySchemes": {
+            "TokenAuth": {
+                "type": "apiKey",
+                "in": "header",
+                "name": "Authentication",
+            }
+        }
+    },
+    "SECURITY": [{"TokenAuth": []}],
+}
