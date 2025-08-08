@@ -9,30 +9,6 @@ from accounts.models import CustomUser, CustomGroup, Organization
 from .fields import CustomURLField
 
 
-class ResourceUserGroup(models.Model):
-    id = models.UUIDField(
-        primary_key=True,
-        default=uuid.uuid4,
-        editable=False,
-    )
-    name = models.CharField("name", blank=False, null=False)
-    description = models.TextField(null=True, blank=True, default="")
-
-    parent = models.ForeignKey(
-        "self",
-        on_delete=models.SET_NULL,
-        related_name="children",
-        null=True,
-        blank=True,
-        default=None,
-    )
-    created = models.DateTimeField(null=False, auto_now_add=True)
-    updated = models.DateTimeField(null=False, auto_now=True)
-
-    class Meta:
-        ordering = ["created"]
-
-
 class EnvironmentManager(models.Manager):
     def create(self, **kwargs):
         auth_user = CustomUser.objects.create(
@@ -46,9 +22,6 @@ class EnvironmentManager(models.Manager):
         client.save()
         token = AuthToken.objects.create(user=auth_user, client=client)
         token.save()
-
-        default_ug = ResourceUserGroup.objects.create(name="default")
-        default_ug.save()
 
         parent_org = kwargs.get("parent_org")
         security_group = CustomGroup.objects.get_or_create(
@@ -76,8 +49,14 @@ class EnvironmentManager(models.Manager):
             auth_user=auth_user,
             url=settings.HOST_NAME,
             pg_url=f"postgres://{uname}:{password}@{parent_org.host}:{port}/{name}?schema={schema}",
-            default_resource_group=default_ug,
         )
+
+        default_ug = ResourceUserGroup.objects.create(
+            name="default",
+            default_user_group=True,
+            environment=instance,
+        )
+        default_ug.save()
 
         return instance
 
@@ -102,12 +81,6 @@ class Environment(models.Model):
         null=False,
         on_delete=models.CASCADE,
     )
-    default_resource_group = models.ForeignKey(
-        ResourceUserGroup,
-        null=False,
-        blank=False,
-        on_delete=models.CASCADE,
-    )
 
     objects = EnvironmentManager()
 
@@ -119,12 +92,62 @@ class Environment(models.Model):
         return f"{self.name}"
 
     @property
+    def default_resource_group(self):
+        return self.environment_groups.filter(default_user_group=True).first()
+
+    @property
     def token(self):
         return AuthToken.objects.get(user=self.auth_user).token
 
     @property
     def client(self):
         return AuthToken.objects.get(user=self.auth_user).client
+
+
+class ResourceUserGroup(models.Model):
+    id = models.UUIDField(
+        primary_key=True,
+        default=uuid.uuid4,
+        editable=False,
+    )
+    name = models.CharField("name", blank=False, null=False)
+    description = models.TextField(null=True, blank=True, default="")
+
+    parent = models.ForeignKey(
+        "self",
+        on_delete=models.SET_NULL,
+        related_name="children",
+        null=True,
+        blank=True,
+        default=None,
+    )
+    created = models.DateTimeField(null=False, auto_now_add=True)
+    updated = models.DateTimeField(null=False, auto_now=True)
+    default_user_group = models.BooleanField(
+        default=False,
+        null=False,
+        blank=False,
+    )
+    environment = models.ForeignKey(
+        Environment,
+        null=False,
+        on_delete=models.CASCADE,
+        related_name="environment_groups",
+    )
+
+    def __str__(self):
+        return f"{self.name}"
+
+    class Meta:
+        ordering = ["created"]
+        unique_together = ["name", "environment"]
+        # constraints = [
+        #     models.UniqueConstraint(
+        #         fields=("default_user_group", "environment"),
+        #         condition=models.Q(default_user_group=True),
+        #         name="one_main_default_group_per_env",
+        #     ),
+        # ]
 
 
 class ResourceUser(models.Model):
@@ -143,11 +166,14 @@ class ResourceUser(models.Model):
 
     environment = models.ForeignKey(
         Environment,
-        null=True,
+        null=False,
         blank=False,
         on_delete=models.CASCADE,
         related_name="environment_users",
     )
+
+    def __str__(self):
+        return f"{self.environment} - {self.user_id}"
 
     class Meta:
         ordering = ["created"]
