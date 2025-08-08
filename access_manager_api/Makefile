@@ -42,7 +42,7 @@ clean:
 .PHONY: clean
 
 
-reset: clean ## Reset connected db
+reset: ## Reset connected db
 	@echo "drop schema public cascade;drop schema $(POSTGRES_SCHEMA) cascade ; create schema public; create schema $(POSTGRES_SCHEMA)" | psql $(DB_CONNECTION)
 .PHONY: reset
 
@@ -81,3 +81,7 @@ tests:
 urls:
 	@$(DJANGO) show_urls
 .PHONY: urls
+
+
+smoke: reset seed schema ## smoke test the system. Run: reset, seed, schema
+.PHONY: smoke
