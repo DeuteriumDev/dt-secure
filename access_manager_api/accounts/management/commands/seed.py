@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.core.management.base import BaseCommand
 from accounts.models import Organization, CustomGroup, CustomUser
-from access_control.models import Environment
+from access_control.models import Environment, ResourceUserGroup
 
 
 class Command(BaseCommand):
@@ -22,6 +22,13 @@ class Command(BaseCommand):
             name="default",
             parent_org=org,
         )
+        env.save()
+
+        ug = ResourceUserGroup.objects.create(
+            name="default UG",
+            environment=env,
+        )
+        env.default_resource_group = ug
         env.save()
 
         self.stdout.write(self.style.SUCCESS("Successfully seeded application"))
