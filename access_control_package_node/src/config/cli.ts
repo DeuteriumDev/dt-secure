@@ -3,7 +3,7 @@ import yaml from "yaml";
 import process from "process";
 import path from "path";
 
-import { DtConfig } from "./types";
+import { DtConfig } from "../types";
 
 const CONFIG_FILE = ".dt-ac.yml";
 class DtConfigError extends Error {}

@@ -10,7 +10,7 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "@hey-api/openapi-ts": "^0.80.1",
+    "@hey-api/openapi-ts": "0.77.0",
     "@types/node": "^24.1.0",
     "@types/pg": "^8",
     "drizzle-orm": "^0.44.4",

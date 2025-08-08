@@ -6,11 +6,17 @@ export default defineConfig({
   input: "../access_manager_api/schema.yml",
   output: "./src/codegen/",
   plugins: [
-    ...defaultPlugins,
     {
       enums: false,
       name: "@hey-api/typescript",
     },
-    "zod",
+    {
+      name: "@hey-api/client-fetch",
+      runtimeConfigPath: "./src/config/client.ts", // interface w/ dt config here
+    },
+    {
+      name: "@hey-api/sdk",
+      auth: false,
+    },
   ],
 });
