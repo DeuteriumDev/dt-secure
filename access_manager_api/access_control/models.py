@@ -72,6 +72,7 @@ class Environment(models.Model):
         null=False,
         blank=False,
         on_delete=models.CASCADE,
+        related_name="environments",
     )
 
     url = models.URLField(null=False)
@@ -80,6 +81,14 @@ class Environment(models.Model):
         CustomUser,
         null=False,
         on_delete=models.CASCADE,
+        related_name="associated_environment",
+    )
+    default_resource_group = models.OneToOneField(
+        "ResourceUserGroup",  # lazy ref because there are circular relations
+        null=True,
+        blank=False,
+        on_delete=models.SET_NULL,
+        related_name="+",  # hidden relation
     )
 
     objects = EnvironmentManager()
@@ -123,11 +132,6 @@ class ResourceUserGroup(models.Model):
     )
     created = models.DateTimeField(null=False, auto_now_add=True)
     updated = models.DateTimeField(null=False, auto_now=True)
-    default_user_group = models.BooleanField(
-        default=False,
-        null=False,
-        blank=False,
-    )
     environment = models.ForeignKey(
         Environment,
         null=False,
@@ -141,13 +145,6 @@ class ResourceUserGroup(models.Model):
     class Meta:
         ordering = ["created"]
         unique_together = ["name", "environment"]
-        # constraints = [
-        #     models.UniqueConstraint(
-        #         fields=("default_user_group", "environment"),
-        #         condition=models.Q(default_user_group=True),
-        #         name="one_main_default_group_per_env",
-        #     ),
-        # ]
 
 
 class ResourceUser(models.Model):
