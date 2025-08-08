@@ -8,8 +8,8 @@ from rest_framework import status
 class ResourceUserPermissionViewSet(
     mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet
 ):
-    queryset = models.ResourceUserPermissions.objects.all()
-    serializer_class = serializers.ResourceUserPermissionsSerializer
+    queryset = models.ResourceUserPermission.objects.all()
+    serializer_class = serializers.ResourceUserPermissionSerializer
     access_policy = access_policies.AccessControlAccessPolicy
 
 

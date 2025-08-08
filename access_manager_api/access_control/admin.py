@@ -38,6 +38,7 @@ class EnvironmentAdmin(ModelAdmin):
                     "pg_url",
                     "auth_user",
                     "token",
+                    "default_resource_group",
                 ),
             },
         ),
@@ -47,5 +48,5 @@ class EnvironmentAdmin(ModelAdmin):
 admin.site.register(models.ResourceUser, ResourceUserAdmin)
 admin.site.register(models.ResourceUserGroup, ResourceUserGroupAdmin)
 admin.site.register(models.ResourcePermission, ResourcePermissionAdmin)
-admin.site.register(models.ResourceUserPermissions, ResourceUserPermissionsAdmin)
+admin.site.register(models.ResourceUserPermission, ResourceUserPermissionsAdmin)
 admin.site.register(models.Environment, EnvironmentAdmin)

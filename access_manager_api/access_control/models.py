@@ -53,7 +53,6 @@ class EnvironmentManager(models.Manager):
 
         default_ug = ResourceUserGroup.objects.create(
             name="default",
-            default_user_group=True,
             environment=instance,
         )
         default_ug.save()
@@ -99,10 +98,6 @@ class Environment(models.Model):
 
     def __str__(self):
         return f"{self.name}"
-
-    @property
-    def default_resource_group(self):
-        return self.environment_groups.filter(default_user_group=True).first()
 
     @property
     def token(self):
@@ -177,7 +172,7 @@ class ResourceUser(models.Model):
         unique_together = ["user_id", "environment"]
 
 
-class ResourceUserPermissions(models.Model):
+class ResourceUserPermission(models.Model):
     id = models.UUIDField(
         primary_key=True,
         default=uuid.uuid4,
@@ -209,7 +204,7 @@ class ResourcePermissionManager(models.Manager):
             **kwargs,
         )
 
-        ResourceUserPermissions(
+        ResourceUserPermission(
             permission=instance,
             can_create=instance.can_create,
             can_read=instance.can_read,
@@ -243,7 +238,7 @@ class ResourcePermission(models.Model):
     can_update = models.BooleanField(null=True)
     can_delete = models.BooleanField(null=True)
     user_resource = models.OneToOneField(
-        ResourceUserPermissions,
+        ResourceUserPermission,
         null=False,
         on_delete=models.CASCADE,
         related_name="permission",

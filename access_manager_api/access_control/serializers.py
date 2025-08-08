@@ -45,9 +45,9 @@ class ResourceUserSerializer(serializers.ModelSerializer):
         )
 
 
-class ResourceUserPermissionsSerializer(serializers.ModelSerializer):
+class ResourceUserPermissionSerializer(serializers.ModelSerializer):
     class Meta:
-        model = models.ResourceUserPermissions
+        model = models.ResourceUserPermission
         fields = "__all__"
 
 
