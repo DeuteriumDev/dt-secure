@@ -47,7 +47,7 @@ HOST_NAME = os.getenv("HOST_NAME") or "http://localhost"
 # Application definition
 
 INSTALLED_APPS = [
-    # install libs
+    # installed libs
     "unfold",
     "unfold.contrib.filters",
     "django.contrib.admin",
@@ -62,10 +62,12 @@ INSTALLED_APPS = [
     "django_filters",
     "django_celery_beat",
     "filters",
-    "simple_history",
+    "simple_history", # https://django-simple-history.readthedocs.io/en/stable/
     "polymorphic",
-    "durin",
+    "durin", # https://django-rest-durin.readthedocs.io/en/latest/index.html
     "django_extensions",
+    "django.contrib.postgres",
+    "psqlextra", # https://django-postgres-extra.readthedocs.io/en/latest/index.html
     # apps
     "accounts",
     "access_control",
@@ -116,7 +118,7 @@ DB_SCHEMA = os.getenv("POSTGRES_SCHEMA") or "dt"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.postgresql_psycopg2",
+        "ENGINE": "psqlextra.backend",
         "NAME": DB_NAME,
         "USER": os.getenv("POSTGRES_USER") or "postgres",
         "PASSWORD": os.getenv("POSTGRES_PASSWORD") or "postgres",
@@ -233,3 +235,5 @@ SPECTACULAR_SETTINGS = {
     },
     "SECURITY": [{"TokenAuth": []}],
 }
+
+POSTGRES_EXTRA_ANNOTATE_SQL = DEBUG
