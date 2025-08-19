@@ -64,6 +64,12 @@ class ResourcePermissionViewSet(viewsets.ModelViewSet):
     access_policy = access_policies.AccessControlAccessPolicy
 
 
+class ResourceViewSet(viewsets.ModelViewSet):
+    queryset = models.Resource.objects.all()
+    serializer_class = serializers.ResourceSerializer
+    access_policy = access_policies.AccessControlAccessPolicy
+
+
 class EnvironmentViewSet(viewsets.ModelViewSet):
     queryset = models.Environment.objects.all()
     serializer_class = serializers.EnvironmentSerializer
