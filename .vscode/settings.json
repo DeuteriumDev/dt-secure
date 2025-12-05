@@ -9,6 +9,7 @@
     "createsuperuser",
     "ctype",
     "datatable",
+    "durin",
     "makemigrations",
     "resourcetype",
     "sonner",
