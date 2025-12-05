@@ -4,7 +4,6 @@ from django.http import HttpRequest
 class AccessFilterMixin:
     def filter_by_access(
         self,
-        *,
         request: HttpRequest,
         access_defaults=(None, None, None, None),
     ):

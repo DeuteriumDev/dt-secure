@@ -13,8 +13,8 @@ services:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_DB=${POSTGRES_DB}
-    networks:
-      - postgres
+    # networks:
+    #   - postgres
 
   rabbitmq:
     image: rabbitmq:3-management-alpine
@@ -28,6 +28,6 @@ volumes:
   data_pg:
   data_rabbitmq:
 
-networks:
-  postgres:
-    driver: bridge
+# networks:
+#   postgres:
+#     driver: bridge
