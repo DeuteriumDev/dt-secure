@@ -4,11 +4,11 @@
     "module": "CommonJS",
     "declaration": true,
     "outDir": "dist",
-    "rootDir": "src",
+    "rootDir": "packages/core/src",
     "strict": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true
   },
-  "include": ["src"],
+  "include": ["packages/core/src", "packages/drizzle"],
   "exclude": ["node_modules", "dist"]
 }

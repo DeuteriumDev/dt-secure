@@ -4,11 +4,9 @@ export interface CreateUserArgs {
   userId: string;
   group?:
     | {
-        newGroup: {
-          name: string;
-          description?: string;
-          parent?: string;
-        };
+        name: string;
+        description?: string;
+        parent?: string;
       }
     | string;
 }
@@ -51,11 +49,21 @@ async function createUser(
 async function createUser(
   userArgs: CreateUserArgs
 ): Promise<CreateUserResults> {
-  access_control.accessControlUsersCreate({
-    body: {
-      user_id: userArgs.userId,
-    },
-  });
+  let data = null;
+  if (userArgs.group) {
+    data = await access_control.accessControlUsersWithGroupCreate({
+      body: {
+        user_id: userArgs.userId,
+        group: userArgs.group,
+      },
+    });
+  } else {
+    data = await access_control.accessControlUsersCreate({
+      body: {
+        user_id: userArgs.userId,
+      },
+    });
+  }
   return {
     result: "success",
     data: {
@@ -64,3 +72,5 @@ async function createUser(
     },
   };
 }
+
+export { createUser };

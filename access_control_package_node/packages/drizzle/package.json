@@ -1,0 +1,24 @@
+{
+  "name": "@deuterium/drizzle",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^24.1.0",
+    "drizzle-orm": "^0.44.4",
+    "eslint": "^8.0.0",
+    "typescript": "^5.0.0",
+    "vitest": "^3.2.4"
+  },
+  "packageManager": "yarn@4.9.2",
+  "dependencies": {
+    "drizzle-orm": ">=0.44.0"
+  },
+  "peerDependencies": {
+    "drizzle-orm": ">=0.44.0"
+  }
+}

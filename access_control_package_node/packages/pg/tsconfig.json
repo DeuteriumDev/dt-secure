@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "CommonJS",
+    "declaration": true,
+    "outDir": "dist",
+    "rootDir": "packages/core/src",
+    "strict": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true
+  },
+  "include": ["packages/core/src", "packages/drizzle"],
+  "exclude": ["node_modules", "dist"]
+}
