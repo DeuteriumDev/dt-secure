@@ -63,11 +63,11 @@ resource_router.register(
     access_control_views.ResourceUserGroupViewSet,
     basename="group",
 )
-resource_router.register(
-    r"resources",
-    access_control_views.ResourceViewSet,
-    basename="resource",
-)
+# resource_router.register(
+#     r"resources",
+#     access_control_views.ResourceViewSet,
+#     basename="resource",
+# )
 resource_router.register(
     r"environments",
     access_control_views.EnvironmentViewSet,

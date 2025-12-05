@@ -2581,6 +2581,20 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/ResourceUserPermission"
+    ParentResourceUserGroup:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        inherit_from_parent:
+          type: boolean
+      required:
+        - id
+        - inherit_from_parent
+        - name
     PatchedCustomGroup:
       type: object
       properties:
@@ -2721,10 +2735,6 @@ components:
           type: string
           format: uuid
           readOnly: true
-        resource_id:
-          type: string
-        inherit_from_parent:
-          type: boolean
         created:
           type: string
           format: date-time
@@ -2733,6 +2743,8 @@ components:
           type: string
           format: date-time
           readOnly: true
+        resource_id:
+          type: string
         can_create:
           type: boolean
           nullable: true
@@ -2745,14 +2757,19 @@ components:
         can_delete:
           type: boolean
           nullable: true
-        children_permissions:
+        inherit_from_parent:
+          type: boolean
+        name:
           type: string
-          format: uuid
           nullable: true
-        user_resource:
+        resource_user_permission:
           type: string
           format: uuid
         group:
+          type: string
+          format: uuid
+          nullable: true
+        parent_permission:
           type: string
           format: uuid
           nullable: true
@@ -2765,6 +2782,16 @@ components:
           readOnly: true
         environment:
           type: string
+          format: uuid
+        parent:
+          type: string
+          format: uuid
+          writeOnly: true
+          nullable: true
+        parents:
+          type: array
+          items:
+            $ref: "#/components/schemas/ParentResourceUserGroup"
           readOnly: true
         name:
           type: string
@@ -2779,10 +2806,6 @@ components:
           type: string
           format: date-time
           readOnly: true
-        parent:
-          type: string
-          format: uuid
-          nullable: true
     ResourcePermission:
       type: object
       properties:
@@ -2790,10 +2813,6 @@ components:
           type: string
           format: uuid
           readOnly: true
-        resource_id:
-          type: string
-        inherit_from_parent:
-          type: boolean
         created:
           type: string
           format: date-time
@@ -2802,6 +2821,8 @@ components:
           type: string
           format: date-time
           readOnly: true
+        resource_id:
+          type: string
         can_create:
           type: boolean
           nullable: true
@@ -2814,14 +2835,19 @@ components:
         can_delete:
           type: boolean
           nullable: true
-        children_permissions:
+        inherit_from_parent:
+          type: boolean
+        name:
           type: string
-          format: uuid
           nullable: true
-        user_resource:
+        resource_user_permission:
           type: string
           format: uuid
         group:
+          type: string
+          format: uuid
+          nullable: true
+        parent_permission:
           type: string
           format: uuid
           nullable: true
@@ -2829,8 +2855,8 @@ components:
         - created
         - id
         - resource_id
+        - resource_user_permission
         - updated
-        - user_resource
     ResourceUser:
       type: object
       properties:
@@ -2867,6 +2893,16 @@ components:
           readOnly: true
         environment:
           type: string
+          format: uuid
+        parent:
+          type: string
+          format: uuid
+          writeOnly: true
+          nullable: true
+        parents:
+          type: array
+          items:
+            $ref: "#/components/schemas/ParentResourceUserGroup"
           readOnly: true
         name:
           type: string
@@ -2881,15 +2917,12 @@ components:
           type: string
           format: date-time
           readOnly: true
-        parent:
-          type: string
-          format: uuid
-          nullable: true
       required:
         - created
-        - environment
         - id
         - name
+        - parent
+        - parents
         - updated
     ResourceUserPermission:
       type: object

@@ -24,11 +24,4 @@ class Command(BaseCommand):
         )
         env.save()
 
-        ug = ResourceUserGroup.objects.create(
-            name="default UG",
-            environment=env,
-        )
-        env.default_resource_group = ug
-        env.save()
-
         self.stdout.write(self.style.SUCCESS("Successfully seeded application"))

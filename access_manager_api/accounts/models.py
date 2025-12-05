@@ -6,6 +6,7 @@ from django.utils import timezone
 import uuid
 from django.core.validators import DomainNameValidator
 
+from access_control import mixins
 from accounts.managers import CustomUserManager
 
 
@@ -31,6 +32,10 @@ class CustomGroup(models.Model):
         return f"{self.name}"
 
 
+class OrganizationManager(mixins.AccessFilterMixin, models.Manager):
+    pass
+
+
 class Organization(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField("name", blank=False, null=False)
@@ -44,6 +49,8 @@ class Organization(models.Model):
 
     created = models.DateTimeField(null=False, auto_now_add=True)
     updated = models.DateTimeField(null=False, auto_now=True)
+
+    objects = OrganizationManager()
 
     def __str__(self):
         return f"{self.name}"
@@ -103,3 +110,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         Sends an email to this User.
         """
         send_mail(subject, message, from_email, [self.email], **kwargs)
+
+    @property
+    def uname(self):
+        return self.email.split("@")[0]

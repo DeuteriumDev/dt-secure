@@ -33,7 +33,7 @@ class EnvironmentManager(mixins.AccessFilterMixin, PostgresManager):
         auth_user.groups.add(security_group)
         auth_user.save()
 
-        uname = auth_user.email.split("@")[0]
+        uname = auth_user.uname
         password = str(uuid.uuid4())
         port = settings.DATABASES["default"]["PORT"]
         schema = settings.DB_SCHEMA
@@ -94,7 +94,10 @@ class Environment(models.Model):
         on_delete=models.SET_NULL,
         related_name="+",  # hidden relation
     )
+    default_can_create = models.BooleanField(default=True, null=False, blank=False)
     default_can_read = models.BooleanField(default=True, null=False, blank=False)
+    default_can_update = models.BooleanField(default=True, null=False, blank=False)
+    default_can_delete = models.BooleanField(default=True, null=False, blank=False)
 
     objects = EnvironmentManager()
 
@@ -206,10 +209,15 @@ class ResourceManager(mixins.AccessFilterMixin, PostgresManager):
             ResourceUserPermission.objects.create(
                 resource_id=instance.resource_id,
                 user=user,
-                can_create=instance.can_create,
-                can_read=instance.can_read,
-                can_update=instance.can_update,
-                can_delete=instance.can_delete,
+                auth_user=instance.environment.auth_user.uname,
+                can_create=kwargs.get("can_create")
+                or instance.environment.default_can_create,
+                can_read=kwargs.get("can_read")
+                or instance.environment.default_can_read,
+                can_update=kwargs.get("can_update")
+                or instance.environment.default_can_update,
+                can_delete=kwargs.get("can_delete")
+                or instance.environment.default_can_delete,
             ).save()
 
         # nav up the tree and add RUPs for each group
@@ -219,10 +227,15 @@ class ResourceManager(mixins.AccessFilterMixin, PostgresManager):
                 ResourceUserPermission.objects.create(
                     resource_id=instance.resource_id,
                     user=user,
-                    can_create=instance.can_create,
-                    can_read=instance.can_read,
-                    can_update=instance.can_update,
-                    can_delete=instance.can_delete,
+                    auth_user=instance.environment.auth_user.uname,
+                    can_create=kwargs.get("can_create")
+                    or instance.environment.default_can_create,
+                    can_read=kwargs.get("can_read")
+                    or instance.environment.default_can_read,
+                    can_update=kwargs.get("can_update")
+                    or instance.environment.default_can_update,
+                    can_delete=kwargs.get("can_delete")
+                    or instance.environment.default_can_delete,
                 ).save()
             parent = parent.parent
 
@@ -268,12 +281,18 @@ class ResourceUserPermission(models.Model):
         null=True,
         blank=False,
         related_name="+",
+        on_delete=models.CASCADE,
     )
     resource = models.ForeignKey(
         Resource,
         null=True,
         blank=False,
         related_name="+",
+        on_delete=models.CASCADE,
+    )
+    auth_user = models.CharField(
+        null=False,
+        blank=False,
     )
 
     can_create = models.BooleanField(null=False)
@@ -285,7 +304,6 @@ class ResourceUserPermission(models.Model):
 
     class Meta:
         indexes = [
-            models.Index(fields=["user"]),
             models.Index(fields=["user"]),
         ]
 
@@ -315,7 +333,7 @@ class ResourcePermission(models.Model):
     )
     resource = models.ForeignKey(
         Resource,
-        null=False,
+        null=True,
         blank=False,
         related_name="permissions",
         on_delete=models.SET_NULL,
@@ -353,9 +371,9 @@ class ResourcePermission(models.Model):
         indexes = [
             models.Index(fields=["parent_permission"]),
             models.Index(fields=["group"]),
-            models.Index(fields=["resource", "resource_user_permission"]),
+            # models.Index(fields=["resource", "resource_user_permission"]),
         ]
-        unique_together = ["resource", "resource_user_permission", "environment"]
+        # unique_together = ["resource", "resource_user_permission", "environment"]
 
     def __str__(self):
         if self.inherit_from_parent and self.parent_permission:
